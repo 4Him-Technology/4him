@@ -15,6 +15,28 @@ const navItems = [
   { path: "/usuarios", label: "Usuários", icon: UserCog },
 ];
 
+function NavLink({ item, isActive, onClick }) {
+  const [hovered, setHovered] = useState(false);
+  const highlight = isActive || hovered;
+  return (
+    <Link
+      to={item.path}
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200"
+      style={{
+        color: highlight ? '#96682c' : 'rgba(255,255,255,0.65)',
+        backgroundColor: highlight ? 'rgba(150,104,44,0.15)' : 'transparent',
+        border: isActive ? '1px solid rgba(150,104,44,0.3)' : '1px solid transparent',
+      }}
+    >
+      <item.icon className="w-4 h-4 shrink-0" />
+      {item.label}
+    </Link>
+  );
+}
+
 export default function Layout() {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -51,20 +73,7 @@ export default function Layout() {
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
-              <Link
-                key={item.path}
-                to={item.path}
-                onClick={() => setMobileOpen(false)}
-                className={cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
-                  isActive
-                    ? "bg-white/15 text-amber-300 border border-amber-400/30"
-                    : "text-white/65 hover:text-white hover:bg-white/10"
-                )}
-              >
-                <item.icon className="w-4 h-4 shrink-0" />
-                {item.label}
-              </Link>
+              <NavLink item={item} isActive={isActive} onClick={() => setMobileOpen(false)} />
             );
           })}
         </nav>
