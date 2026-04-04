@@ -32,11 +32,7 @@ export default function Layout() {
           "fixed lg:static inset-y-0 left-0 z-50 w-64 flex flex-col transition-transform duration-300 relative overflow-hidden",
           mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
-        style={{
-          backgroundImage: `url('${STONE_BG}')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
+        style={{ backgroundColor: '#000000' }}
       >
         {/* Subtle dark overlay for depth */}
         <div className="absolute inset-0 bg-black/30 z-0" />
