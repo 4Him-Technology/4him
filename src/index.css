@@ -32,13 +32,13 @@
     --chart-4: 0 65% 50%;
     --chart-5: 200 50% 40%;
     --radius: 0.75rem;
-    --sidebar-background: 28 18% 10%;
+    --sidebar-background: 24 8% 9%;
     --sidebar-foreground: 36 20% 88%;
-    --sidebar-primary: 34 55% 52%;
+    --sidebar-primary: 34 55% 60%;
     --sidebar-primary-foreground: 28 18% 10%;
-    --sidebar-accent: 28 15% 18%;
-    --sidebar-accent-foreground: 34 55% 65%;
-    --sidebar-border: 28 15% 20%;
+    --sidebar-accent: 24 8% 15%;
+    --sidebar-accent-foreground: 34 55% 70%;
+    --sidebar-border: 24 8% 18%;
     --sidebar-ring: 34 55% 52%;
   }
 

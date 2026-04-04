@@ -1,7 +1,9 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Calendar, MessageSquare, Users, Settings, UserCog, Heart, Menu, X } from "lucide-react";
+import { LayoutDashboard, Calendar, MessageSquare, Users, Settings, UserCog, Menu } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+
+const LOGO_URL = "https://media.base44.com/images/public/69d05d38b40549791975d990/46091912f_image.png";
 
 const navItems = [
   { path: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -24,23 +26,31 @@ export default function Layout() {
       )}
 
       {/* Sidebar */}
-      <aside className={cn(
-        "fixed lg:static inset-y-0 left-0 z-50 w-64 bg-sidebar text-sidebar-foreground flex flex-col transition-transform duration-300",
-        mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-      )}>
-        {/* Logo */}
-        <div className="flex items-center gap-3 px-6 h-16 border-b border-sidebar-border">
-          <div className="w-9 h-9 rounded-xl bg-sidebar-primary/20 flex items-center justify-center">
-            <span className="text-sidebar-primary font-black text-lg leading-none">4H</span>
-          </div>
-          <div>
-            <h1 className="font-bold text-sm text-sidebar-primary tracking-wide">4Him Technology</h1>
-            <p className="text-[10px] text-sidebar-foreground/50 tracking-wider uppercase">CardioAgenda</p>
-          </div>
+      <aside
+        className={cn(
+          "fixed lg:static inset-y-0 left-0 z-50 w-64 flex flex-col transition-transform duration-300 relative overflow-hidden",
+          mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        )}
+        style={{
+          backgroundImage: `url('${LOGO_URL}')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        {/* Dark overlay for readability */}
+        <div className="absolute inset-0 bg-black/65 z-0" />
+
+        {/* Logo area */}
+        <div className="relative z-10 flex items-center justify-center px-4 py-5 border-b border-white/10">
+          <img
+            src={LOGO_URL}
+            alt="4Him Technology"
+            className="h-14 w-auto object-contain drop-shadow-2xl"
+          />
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-3 py-4 space-y-1">
+        <nav className="relative z-10 flex-1 px-3 py-4 space-y-1">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
@@ -51,11 +61,11 @@ export default function Layout() {
                 className={cn(
                   "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
                   isActive
-                    ? "bg-sidebar-accent text-sidebar-primary"
-                    : "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
+                    ? "bg-white/15 text-amber-300 border border-amber-400/30"
+                    : "text-white/65 hover:text-white hover:bg-white/10"
                 )}
               >
-                <item.icon className="w-4.5 h-4.5" />
+                <item.icon className="w-4 h-4 shrink-0" />
                 {item.label}
               </Link>
             );
@@ -63,8 +73,8 @@ export default function Layout() {
         </nav>
 
         {/* Footer */}
-        <div className="px-4 py-4 border-t border-sidebar-border">
-          <p className="text-[10px] text-sidebar-foreground/40 text-center">CardioAgenda v1.0</p>
+        <div className="relative z-10 px-4 py-4 border-t border-white/10">
+          <p className="text-[10px] text-white/30 text-center">CardioAgenda v1.0</p>
         </div>
       </aside>
 
