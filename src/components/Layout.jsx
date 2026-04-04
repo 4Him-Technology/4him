@@ -1,9 +1,10 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Calendar, MessageSquare, Users, Settings, UserCog, Menu } from "lucide-react";
+import { LayoutDashboard, Calendar, MessageSquare, Users, Settings, UserCog, Menu, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 const LOGO_URL = "https://media.base44.com/images/public/69d05d38b40549791975d990/834173352_w2.png";
+const LOGO_MINI = "https://media.base44.com/images/public/69d05d38b40549791975d990/42c26ab70_poih.png";
 const STONE_BG = "https://media.base44.com/images/public/69d05d38b40549791975d990/8508442db_generated_image.png";
 
 const navItems = [
@@ -15,7 +16,7 @@ const navItems = [
   { path: "/usuarios", label: "Usuários", icon: UserCog },
 ];
 
-function NavLink({ item, isActive, onClick }) {
+function NavLink({ item, isActive, onClick, collapsed }) {
   const [hovered, setHovered] = useState(false);
   const highlight = isActive || hovered;
   return (
@@ -24,7 +25,11 @@ function NavLink({ item, isActive, onClick }) {
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200"
+      title={collapsed ? item.label : undefined}
+      className={cn(
+        "flex items-center gap-3 rounded-lg text-sm font-medium transition-all duration-200",
+        collapsed ? "px-3 py-2.5 justify-center" : "px-3 py-2.5"
+      )}
       style={{
         color: highlight ? '#96682c' : 'rgba(255,255,255,0.65)',
         backgroundColor: highlight ? 'rgba(150,104,44,0.15)' : 'transparent',
@@ -32,7 +37,7 @@ function NavLink({ item, isActive, onClick }) {
       }}
     >
       <item.icon className="w-4 h-4 shrink-0" />
-      {item.label}
+      {!collapsed && item.label}
     </Link>
   );
 }
@@ -40,6 +45,7 @@ function NavLink({ item, isActive, onClick }) {
 export default function Layout() {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
@@ -51,7 +57,8 @@ export default function Layout() {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed lg:static inset-y-0 left-0 z-50 w-64 flex flex-col transition-transform duration-300 relative overflow-hidden",
+          "fixed lg:static inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 relative overflow-hidden",
+          collapsed ? "w-16" : "w-64",
           mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
         style={{ backgroundColor: '#000000' }}
@@ -59,13 +66,22 @@ export default function Layout() {
         {/* Subtle dark overlay for depth */}
         <div className="absolute inset-0 bg-black/30 z-0" />
 
+        {/* Toggle button */}
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="absolute -right-3 top-20 z-20 w-6 h-6 rounded-full flex items-center justify-center shadow-lg border border-white/20 transition-colors hover:opacity-90"
+          style={{ backgroundColor: '#96682c' }}
+        >
+          {collapsed ? <ChevronRight className="w-3 h-3 text-white" /> : <ChevronLeft className="w-3 h-3 text-white" />}
+        </button>
+
         {/* Logo area */}
         <div className="relative z-10 flex items-center justify-center px-4 py-5 border-b border-white/10">
-          <img
-            src={LOGO_URL}
-            alt="4Him Technology"
-            className="h-14 w-auto object-contain drop-shadow-2xl"
-          />
+          {collapsed ? (
+            <img src={LOGO_MINI} alt="Logo" className="h-10 w-10 object-contain drop-shadow-2xl" />
+          ) : (
+            <img src={LOGO_URL} alt="4Him Technology" className="h-14 w-auto object-contain drop-shadow-2xl" />
+          )}
         </div>
 
         {/* Navigation */}
@@ -73,15 +89,17 @@ export default function Layout() {
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
-              <NavLink item={item} isActive={isActive} onClick={() => setMobileOpen(false)} />
+              <NavLink key={item.path} item={item} isActive={isActive} onClick={() => setMobileOpen(false)} collapsed={collapsed} />
             );
           })}
         </nav>
 
         {/* Footer */}
-        <div className="relative z-10 px-4 py-4 border-t border-white/10">
-          <p className="text-[10px] text-white/30 text-center">CardioAgenda v1.0</p>
-        </div>
+        {!collapsed && (
+          <div className="relative z-10 px-4 py-4 border-t border-white/10">
+            <p className="text-[10px] text-white/30 text-center">CardioAgenda v1.0</p>
+          </div>
+        )}
       </aside>
 
       {/* Main content */}
