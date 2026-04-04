@@ -57,7 +57,7 @@ export default function Layout() {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed lg:static inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 relative overflow-hidden",
+          "fixed lg:static inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 relative",
           collapsed ? "w-16" : "w-64",
           mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
@@ -69,7 +69,7 @@ export default function Layout() {
         {/* Toggle button */}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="absolute right-2 top-20 z-20 w-6 h-6 rounded-full flex items-center justify-center shadow-lg border border-white/20 transition-colors hover:opacity-90"
+          className="absolute -right-3 top-20 z-20 w-6 h-6 rounded-full flex items-center justify-center shadow-lg border border-white/20 transition-colors hover:opacity-90"
           style={{ backgroundColor: '#96682c' }}
         >
           {collapsed ? <ChevronRight className="w-3 h-3 text-white" /> : <ChevronLeft className="w-3 h-3 text-white" />}
