@@ -1,0 +1,44 @@
+{
+  "name": "ClinicSettings",
+  "type": "object",
+  "properties": {
+    "ai_prompt": {
+      "type": "string",
+      "title": "Prompt da IA"
+    },
+    "clinic_name": {
+      "type": "string",
+      "title": "Nome do Consult\u00f3rio"
+    },
+    "doctor_name": {
+      "type": "string",
+      "title": "Nome do M\u00e9dico"
+    },
+    "working_days": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "title": "Dias de Atendimento"
+    },
+    "start_time": {
+      "type": "string",
+      "title": "Hor\u00e1rio de In\u00edcio"
+    },
+    "end_time": {
+      "type": "string",
+      "title": "Hor\u00e1rio de Fim"
+    },
+    "slot_duration": {
+      "type": "number",
+      "title": "Dura\u00e7\u00e3o da Consulta (min)"
+    },
+    "whatsapp_number": {
+      "type": "string",
+      "title": "N\u00famero WhatsApp"
+    }
+  },
+  "required": [
+    "clinic_name"
+  ]
+}

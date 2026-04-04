@@ -5,7 +5,13 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
-// Add page imports here
+import Layout from './components/Layout';
+import Dashboard from './pages/Dashboard';
+import Appointments from './pages/Appointments';
+import WhatsApp from './pages/WhatsApp';
+import Patients from './pages/Patients';
+import Settings from './pages/Settings';
+import UserManagement from './pages/UserManagement';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -33,8 +39,15 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
-      {/* Add your page Route elements here */}
-      <Route path="*" element={<PageNotFound />} />
+      <Route element={<Layout />}>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/agendamentos" element={<Appointments />} />
+        <Route path="/whatsapp" element={<WhatsApp />} />
+        <Route path="/pacientes" element={<Patients />} />
+        <Route path="/configuracoes" element={<Settings />} />
+        <Route path="/usuarios" element={<UserManagement />} />
+        <Route path="*" element={<PageNotFound />} />
+      </Route>
     </Routes>
   );
 };

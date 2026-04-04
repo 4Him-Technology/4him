@@ -1,0 +1,46 @@
+{
+  "name": "WhatsAppMessage",
+  "type": "object",
+  "properties": {
+    "contact_name": {
+      "type": "string",
+      "title": "Nome do Contato"
+    },
+    "contact_phone": {
+      "type": "string",
+      "title": "Telefone"
+    },
+    "message": {
+      "type": "string",
+      "title": "Mensagem"
+    },
+    "direction": {
+      "type": "string",
+      "enum": [
+        "incoming",
+        "outgoing"
+      ],
+      "title": "Dire\u00e7\u00e3o"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "sent",
+        "delivered",
+        "read",
+        "received"
+      ],
+      "title": "Status"
+    },
+    "is_ai_response": {
+      "type": "boolean",
+      "title": "Resposta da IA"
+    }
+  },
+  "required": [
+    "contact_name",
+    "contact_phone",
+    "message",
+    "direction"
+  ]
+}

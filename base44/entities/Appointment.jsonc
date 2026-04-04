@@ -1,0 +1,63 @@
+{
+  "name": "Appointment",
+  "type": "object",
+  "properties": {
+    "patient_id": {
+      "type": "string",
+      "title": "Paciente ID"
+    },
+    "patient_name": {
+      "type": "string",
+      "title": "Nome do Paciente"
+    },
+    "patient_phone": {
+      "type": "string",
+      "title": "Telefone do Paciente"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "title": "Data"
+    },
+    "time": {
+      "type": "string",
+      "title": "Hor\u00e1rio"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "Consulta",
+        "Retorno",
+        "Exame",
+        "Urg\u00eancia"
+      ],
+      "title": "Tipo"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Agendado",
+        "Confirmado",
+        "Realizado",
+        "Cancelado",
+        "N\u00e3o Compareceu"
+      ],
+      "title": "Status"
+    },
+    "notes": {
+      "type": "string",
+      "title": "Observa\u00e7\u00f5es"
+    },
+    "insurance": {
+      "type": "string",
+      "title": "Conv\u00eanio"
+    }
+  },
+  "required": [
+    "patient_name",
+    "date",
+    "time",
+    "type",
+    "status"
+  ]
+}

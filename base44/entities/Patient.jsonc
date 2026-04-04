@@ -1,0 +1,63 @@
+{
+  "name": "Patient",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string",
+      "title": "Nome Completo"
+    },
+    "phone": {
+      "type": "string",
+      "title": "Telefone"
+    },
+    "email": {
+      "type": "string",
+      "title": "Email"
+    },
+    "cpf": {
+      "type": "string",
+      "title": "CPF"
+    },
+    "date_of_birth": {
+      "type": "string",
+      "format": "date",
+      "title": "Data de Nascimento"
+    },
+    "gender": {
+      "type": "string",
+      "enum": [
+        "Masculino",
+        "Feminino",
+        "Outro"
+      ],
+      "title": "Sexo"
+    },
+    "notes": {
+      "type": "string",
+      "title": "Observa\u00e7\u00f5es"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "WhatsApp",
+        "Presencial",
+        "Telefone",
+        "Site",
+        "Indica\u00e7\u00e3o"
+      ],
+      "title": "Origem"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Ativo",
+        "Inativo"
+      ],
+      "title": "Status"
+    }
+  },
+  "required": [
+    "full_name",
+    "phone"
+  ]
+}
