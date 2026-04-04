@@ -97,7 +97,7 @@ export default function Layout() {
         {/* Footer */}
         {!collapsed && (
           <div className="relative z-10 px-4 py-4 border-t border-white/10">
-            <p className="text-[10px] text-white/30 text-center">CardioAgenda v1.0</p>
+            <p className="text-[10px] text-white/30 text-center">4Him Technology v1.0</p>
           </div>
         )}
       </aside>
