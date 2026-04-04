@@ -12,6 +12,7 @@ import WhatsApp from './pages/WhatsApp';
 import Patients from './pages/Patients';
 import Settings from './pages/Settings';
 import UserManagement from './pages/UserManagement';
+import FinancialAnalysis from './pages/FinancialAnalysis';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -46,6 +47,7 @@ const AuthenticatedApp = () => {
         <Route path="/pacientes" element={<Patients />} />
         <Route path="/configuracoes" element={<Settings />} />
         <Route path="/usuarios" element={<UserManagement />} />
+        <Route path="/financeiro" element={<FinancialAnalysis />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>
     </Routes>

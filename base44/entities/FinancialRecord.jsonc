@@ -1,0 +1,52 @@
+{
+  "name": "FinancialRecord",
+  "type": "object",
+  "properties": {
+    "description": {
+      "type": "string",
+      "title": "Descri\u00e7\u00e3o"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "Receita",
+        "Custo"
+      ],
+      "title": "Tipo"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Consulta",
+        "Exame",
+        "Procedimento",
+        "Aluguel",
+        "Sal\u00e1rio",
+        "Equipamento",
+        "Marketing",
+        "Outros"
+      ],
+      "title": "Categoria"
+    },
+    "amount": {
+      "type": "number",
+      "title": "Valor (R$)"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "title": "Data"
+    },
+    "notes": {
+      "type": "string",
+      "title": "Observa\u00e7\u00f5es"
+    }
+  },
+  "required": [
+    "description",
+    "type",
+    "category",
+    "amount",
+    "date"
+  ]
+}

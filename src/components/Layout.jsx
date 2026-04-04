@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Calendar, MessageSquare, Users, Settings, UserCog, Menu, ChevronLeft, ChevronRight } from "lucide-react";
+import { LayoutDashboard, Calendar, MessageSquare, Users, Settings, UserCog, Menu, ChevronLeft, ChevronRight, BarChart2 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -14,6 +14,7 @@ const navItems = [
   { path: "/pacientes", label: "Pacientes", icon: Users },
   { path: "/configuracoes", label: "Configurações", icon: Settings },
   { path: "/usuarios", label: "Usuários", icon: UserCog },
+  { path: "/financeiro", label: "Financeiro", icon: BarChart2 },
 ];
 
 function NavLink({ item, isActive, onClick, collapsed }) {
