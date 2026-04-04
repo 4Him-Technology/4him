@@ -3,7 +3,7 @@ import { LayoutDashboard, Calendar, MessageSquare, Users, Settings, UserCog, Men
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-const LOGO_URL = "https://media.base44.com/images/public/69d05d38b40549791975d990/46091912f_image.png";
+const LOGO_URL = "https://media.base44.com/images/public/69d05d38b40549791975d990/495b4061b_w2.png";
 const STONE_BG = "https://media.base44.com/images/public/69d05d38b40549791975d990/8508442db_generated_image.png";
 
 const navItems = [
