@@ -4,6 +4,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 const LOGO_URL = "https://media.base44.com/images/public/69d05d38b40549791975d990/46091912f_image.png";
+const STONE_BG = "https://media.base44.com/images/public/69d05d38b40549791975d990/8508442db_generated_image.png";
 
 const navItems = [
   { path: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -32,13 +33,13 @@ export default function Layout() {
           mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
         style={{
-          backgroundImage: `url('${LOGO_URL}')`,
+          backgroundImage: `url('${STONE_BG}')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
       >
-        {/* Dark overlay for readability */}
-        <div className="absolute inset-0 bg-black/65 z-0" />
+        {/* Subtle dark overlay for depth */}
+        <div className="absolute inset-0 bg-black/30 z-0" />
 
         {/* Logo area */}
         <div className="relative z-10 flex items-center justify-center px-4 py-5 border-b border-white/10">
