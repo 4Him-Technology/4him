@@ -16,7 +16,7 @@ const navItems = [
   { path: "/usuarios", label: "Usuários", icon: UserCog },
   { path: "/financeiro", label: "Financeiro", icon: BarChart2 },
   { path: "/leads", label: "Leads / Kanban", icon: Kanban },
-  { path: "/assistente", label: "Assistente IA", icon: BotMessageSquare },
+  { path: "/assistente", label: "Fale com a Elo4h", icon: BotMessageSquare },
 ];
 
 function NavLink({ item, isActive, onClick, collapsed }) {

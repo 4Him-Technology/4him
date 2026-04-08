@@ -110,7 +110,7 @@ export default function AIAssistant() {
           <Sparkles className="w-5 h-5 text-primary-foreground" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Assistente IA</h1>
+          <h1 className="text-2xl font-bold text-foreground">Fale com a Elo4h</h1>
           <p className="text-sm text-muted-foreground">Tire suas dúvidas sobre a clínica em tempo real</p>
         </div>
         <span className="ml-auto flex items-center gap-1.5 text-xs text-emerald-600 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full font-medium">
