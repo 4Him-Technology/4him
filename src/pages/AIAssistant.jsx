@@ -4,11 +4,18 @@ import { base44 } from "@/api/base44Client";
 import ReactMarkdown from "react-markdown";
 
 export default function AIAssistant() {
+  const MOCK_MESSAGES = [
+    { role: "user", content: "Oi Elo4h! Quais convênios a clínica aceita?" },
+    { role: "assistant", content: "Olá! 😊 A clínica aceita os seguintes convênios:\n\n- **Unimed**\n- **Bradesco Saúde**\n- **SulAmérica**\n- **Amil**\n- **Hapvida**\n- **Particular**\n\nSe o paciente tiver algum convênio diferente, recomendo verificar com a gerência antes de confirmar o agendamento." },
+    { role: "user", content: "Como faço para remarcar uma consulta?" },
+    { role: "assistant", content: "Para remarcar uma consulta, siga estes passos:\n\n1. Acesse a aba **Agendamentos** no menu lateral\n2. Localize o paciente pelo nome ou telefone\n3. Clique em **Editar** na consulta desejada\n4. Altere a data e horário disponível\n5. Salve as alterações\n\nO paciente deverá ser notificado pelo WhatsApp sobre a remarcação. Posso te ajudar com mais alguma coisa?" },
+  ];
+
   const [conversation, setConversation] = useState(null);
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState(MOCK_MESSAGES);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [starting, setStarting] = useState(true);
+  const [starting, setStarting] = useState(false);
   const bottomRef = useRef(null);
 
   useEffect(() => {
