@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Search, Trash2, Edit2, Phone, Mail } from "lucide-react";
+import { Plus, Search, Trash2, Edit2, Phone, Mail, Calendar, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import moment from "moment";
 import PatientModal from "../components/patients/PatientModal";
@@ -17,18 +17,21 @@ const sourceColors = {
 
 export default function Patients() {
   const [patients, setPatients] = useState([]);
+  const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
 
   const load = async () => {
-    const pts = await base44.entities.Patient.list("-created_date", 500);
+    const [pts, apts] = await Promise.all([
+      base44.entities.Patient.list("-created_date", 500),
+      base44.entities.Appointment.list("-date", 500),
+    ]);
     setPatients(pts);
+    setAppointments(apts);
     setLoading(false);
   };
-
-  useEffect(() => { load(); }, []);
 
   const handleDelete = async (id) => {
     await base44.entities.Patient.delete(id);
@@ -70,7 +73,12 @@ export default function Patients() {
         {filtered.length === 0 && (
           <p className="text-sm text-muted-foreground col-span-full text-center py-12">Nenhum paciente encontrado</p>
         )}
-        {filtered.map(p => (
+        {filtered.map(p => {
+          const patientApts = appointments
+            .filter(a => a.patient_phone === p.phone || a.patient_name === p.full_name)
+            .sort((a, b) => b.date.localeCompare(a.date));
+          const lastApt = patientApts[0];
+          return (
           <div key={p.id} className="bg-card rounded-xl border border-border p-4 hover:shadow-md transition-shadow">
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-3">
@@ -115,8 +123,31 @@ export default function Patients() {
                 {p.status || "Ativo"}
               </span>
             </div>
+            {/* Histórico de atendimentos */}
+            {patientApts.length > 0 && (
+              <div className="mt-3 pt-3 border-t border-border/50">
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-2">Histórico ({patientApts.length} atend.)</p>
+                <div className="space-y-1.5">
+                  {patientApts.slice(0, 3).map((a, i) => (
+                    <div key={i} className="flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-1.5 text-muted-foreground">
+                        <Calendar className="w-3 h-3 shrink-0" />
+                        <span>{moment(a.date).format("DD/MM/YY")} · {a.time} · {a.type}</span>
+                      </div>
+                      <span className={cn("text-[10px] px-1.5 py-0.5 rounded-full font-medium",
+                        a.status === "Realizado" ? "bg-emerald-100 text-emerald-700" :
+                        a.status === "Cancelado" ? "bg-red-100 text-red-700" :
+                        a.status === "Confirmado" ? "bg-blue-100 text-blue-700" :
+                        "bg-amber-100 text-amber-700"
+                      )}>{a.status}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-        ))}
+          );
+        })}
       </div>
 
       <PatientModal

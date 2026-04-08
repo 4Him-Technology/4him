@@ -5,6 +5,8 @@ import StatCard from "../components/dashboard/StatCard";
 import AppointmentChart from "../components/dashboard/AppointmentChart";
 import StatusPieChart from "../components/dashboard/StatusPieChart";
 import RecentAppointments from "../components/dashboard/RecentAppointments";
+import InsuranceChart from "../components/dashboard/InsuranceChart";
+import TypeChart from "../components/dashboard/TypeChart";
 import moment from "moment";
 
 export default function Dashboard() {
@@ -71,6 +73,24 @@ export default function Dashboard() {
   });
   const pieData = Object.entries(statusCounts).map(([name, value]) => ({ name, value }));
 
+  // Insurance chart
+  const insuranceCounts = {};
+  appointments.forEach(a => {
+    const ins = a.insurance || "Particular";
+    insuranceCounts[ins] = (insuranceCounts[ins] || 0) + 1;
+  });
+  const insuranceData = Object.entries(insuranceCounts)
+    .map(([name, total]) => ({ name, total }))
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 6);
+
+  // Type chart
+  const typeCounts = {};
+  appointments.forEach(a => {
+    typeCounts[a.type] = (typeCounts[a.type] || 0) + 1;
+  });
+  const typeData = Object.entries(typeCounts).map(([name, value]) => ({ name, value }));
+
   return (
     <div className="space-y-6 max-w-7xl">
       <div>
@@ -88,13 +108,17 @@ export default function Dashboard() {
         <StatCard title="Pacientes" value={patients.length} icon={Users} subtitle="cadastrados" trendUp />
       </div>
 
-      {/* Charts */}
+      {/* Charts row 1 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <AppointmentChart data={weekData} />
         <StatusPieChart data={pieData.length > 0 ? pieData : [{ name: "Sem dados", value: 1 }]} />
       </div>
 
-      {/* Recent */}
+      {/* Charts row 2 */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <InsuranceChart data={insuranceData} />
+        <TypeChart data={typeData.length > 0 ? typeData : [{ name: "Sem dados", value: 1 }]} />
+      </div>
       <RecentAppointments appointments={upcoming} />
     </div>
   );
