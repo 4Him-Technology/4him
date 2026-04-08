@@ -14,6 +14,7 @@ import Settings from './pages/Settings';
 import UserManagement from './pages/UserManagement';
 import FinancialAnalysis from './pages/FinancialAnalysis';
 import Leads from './pages/Leads';
+import AIAssistant from './pages/AIAssistant';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -50,6 +51,7 @@ const AuthenticatedApp = () => {
         <Route path="/usuarios" element={<UserManagement />} />
         <Route path="/financeiro" element={<FinancialAnalysis />} />
         <Route path="/leads" element={<Leads />} />
+        <Route path="/assistente" element={<AIAssistant />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>
     </Routes>
