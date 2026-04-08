@@ -1,106 +1,54 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, Bot, User, Sparkles } from "lucide-react";
-
-const STATIC_MESSAGES = [
-  {
-    role: "assistant",
-    content: "Olá! Sou o assistente virtual da **CardioAgenda**. Estou aqui para tirar suas dúvidas sobre consultas, exames, convênios e muito mais. Como posso te ajudar hoje?",
-  },
-  {
-    role: "user",
-    content: "Quais convênios vocês aceitam?",
-  },
-  {
-    role: "assistant",
-    content: "Atendemos os principais convênios do mercado, incluindo:\n\n- **Unimed**\n- **Bradesco Saúde**\n- **SulAmérica**\n- **Amil**\n- **Porto Seguro**\n- **Particular**\n\nCaso seu convênio não esteja na lista, entre em contato e verificamos a possibilidade de credenciamento. 😊",
-  },
-  {
-    role: "user",
-    content: "Como faço para agendar uma consulta?",
-  },
-  {
-    role: "assistant",
-    content: "Você pode agendar sua consulta de três formas:\n\n1. **WhatsApp** – Envie uma mensagem para (11) 9xxxx-xxxx e nossa equipe irá te atender.\n2. **Telefone** – Ligue para (11) 3xxx-xxxx de segunda a sexta, das 8h às 18h.\n3. **Presencialmente** – Compareça à nossa clínica na Rua Exemplo, 123.\n\nQual forma prefere?",
-  },
-];
-
-const SUGGESTED = [
-  "Quais são os horários de atendimento?",
-  "Preciso de pedido médico para exames?",
-  "Quanto tempo dura uma consulta?",
-  "Como cancelo ou remarco minha consulta?",
-];
-
-const AUTO_RESPONSES = {
-  "Quais são os horários de atendimento?":
-    "Atendemos de **segunda a sexta-feira**, das **8h às 18h**, e aos **sábados das 8h às 12h**. Feriados seguem escala especial — consulte-nos via WhatsApp.",
-  "Preciso de pedido médico para exames?":
-    "Depende do exame! Para a maioria dos exames laboratoriais e de imagem, **sim**, é necessário pedido médico. Porém, alguns check-ups podem ser realizados sem encaminhamento. Nos informe o exame desejado e verificamos para você.",
-  "Quanto tempo dura uma consulta?":
-    "Uma consulta padrão tem duração média de **30 a 45 minutos**. Consultas de retorno costumam ser mais rápidas, em torno de **20 minutos**.",
-  "Como cancelo ou remarco minha consulta?":
-    "Para cancelar ou remarcar, entre em contato com pelo menos **24 horas de antecedência** pelo WhatsApp ou telefone. Isso garante que outro paciente possa ser atendido no horário. 🙏",
-};
-
-function MessageBubble({ msg }) {
-  const isUser = msg.role === "user";
-  const lines = msg.content.split("\n").map((line, i) => {
-    const formatted = line
-      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-      .replace(/^- /, "• ");
-    return <p key={i} dangerouslySetInnerHTML={{ __html: formatted }} className="leading-relaxed" />;
-  });
-
-  return (
-    <div className={`flex gap-3 ${isUser ? "justify-end" : "justify-start"}`}>
-      {!isUser && (
-        <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0 mt-1">
-          <Bot className="w-4 h-4 text-primary-foreground" />
-        </div>
-      )}
-      <div
-        className={`max-w-[75%] rounded-2xl px-4 py-3 text-sm space-y-1 ${
-          isUser
-            ? "bg-primary text-primary-foreground rounded-br-sm"
-            : "bg-card border border-border text-foreground rounded-bl-sm"
-        }`}
-      >
-        {lines}
-      </div>
-      {isUser && (
-        <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center shrink-0 mt-1">
-          <User className="w-4 h-4 text-muted-foreground" />
-        </div>
-      )}
-    </div>
-  );
-}
+import { Send, Bot, Sparkles, Loader2 } from "lucide-react";
+import { base44 } from "@/api/base44Client";
+import ReactMarkdown from "react-markdown";
 
 export default function AIAssistant() {
-  const [messages, setMessages] = useState(STATIC_MESSAGES);
+  const [conversation, setConversation] = useState(null);
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [starting, setStarting] = useState(true);
   const bottomRef = useRef(null);
+
+  useEffect(() => {
+    const init = async () => {
+      const conv = await base44.agents.createConversation({
+        agent_name: "elo4h",
+        metadata: { name: "Conversa com Elo4h" },
+      });
+      setConversation(conv);
+      setMessages(conv.messages || []);
+      setStarting(false);
+
+      base44.agents.subscribeToConversation(conv.id, (data) => {
+        setMessages(data.messages || []);
+      });
+    };
+    init();
+  }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const sendMessage = (text) => {
-    const userText = text || input.trim();
-    if (!userText) return;
+  const sendMessage = async () => {
+    const text = input.trim();
+    if (!text || loading || !conversation) return;
     setInput("");
-    setMessages((prev) => [...prev, { role: "user", content: userText }]);
     setLoading(true);
-
-    setTimeout(() => {
-      const reply =
-        AUTO_RESPONSES[userText] ||
-        "Obrigado pela sua mensagem! Nossa equipe irá verificar e responder em breve. Para urgências, entre em contato pelo WhatsApp. 😊";
-      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
-      setLoading(false);
-    }, 900);
+    await base44.agents.addMessage(conversation, { role: "user", content: text });
+    setLoading(false);
   };
+
+  if (starting) {
+    return (
+      <div className="flex items-center justify-center h-64 gap-3 text-muted-foreground">
+        <Loader2 className="w-5 h-5 animate-spin" />
+        <span className="text-sm">Iniciando Elo4h...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-3xl mx-auto space-y-4">
@@ -111,7 +59,7 @@ export default function AIAssistant() {
         </div>
         <div>
           <h1 className="text-2xl font-bold text-foreground">Fale com a Elo4h</h1>
-          <p className="text-sm text-muted-foreground">Tire suas dúvidas sobre a clínica em tempo real</p>
+          <p className="text-sm text-muted-foreground">Assistente de IA para colaboradores</p>
         </div>
         <span className="ml-auto flex items-center gap-1.5 text-xs text-emerald-600 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full font-medium">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -120,12 +68,42 @@ export default function AIAssistant() {
       </div>
 
       {/* Chat box */}
-      <div className="bg-muted/30 border border-border rounded-2xl overflow-hidden flex flex-col h-[60vh]">
+      <div className="bg-muted/30 border border-border rounded-2xl overflow-hidden flex flex-col h-[65vh]">
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {messages.map((msg, i) => (
-            <MessageBubble key={i} msg={msg} />
-          ))}
+          {messages.length === 0 && (
+            <div className="flex flex-col items-center justify-center h-full text-center gap-3 text-muted-foreground">
+              <Bot className="w-12 h-12 opacity-30" />
+              <p className="text-sm">Olá! Sou a <strong>Elo4h</strong>, sua assistente virtual.<br />Como posso te ajudar hoje?</p>
+            </div>
+          )}
+          {messages.map((msg, i) => {
+            const isUser = msg.role === "user";
+            return (
+              <div key={i} className={`flex gap-3 ${isUser ? "justify-end" : "justify-start"}`}>
+                {!isUser && (
+                  <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0 mt-1">
+                    <Bot className="w-4 h-4 text-primary-foreground" />
+                  </div>
+                )}
+                <div
+                  className={`max-w-[78%] rounded-2xl px-4 py-3 text-sm ${
+                    isUser
+                      ? "bg-primary text-primary-foreground rounded-br-sm"
+                      : "bg-card border border-border text-foreground rounded-bl-sm"
+                  }`}
+                >
+                  {isUser ? (
+                    <p>{msg.content}</p>
+                  ) : (
+                    <ReactMarkdown className="prose prose-sm max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
+                      {msg.content}
+                    </ReactMarkdown>
+                  )}
+                </div>
+              </div>
+            );
+          })}
           {loading && (
             <div className="flex gap-3 justify-start">
               <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0">
@@ -143,21 +121,6 @@ export default function AIAssistant() {
           <div ref={bottomRef} />
         </div>
 
-        {/* Suggested questions */}
-        {messages.length < 6 && (
-          <div className="px-4 pb-2 flex flex-wrap gap-2">
-            {SUGGESTED.map((s) => (
-              <button
-                key={s}
-                onClick={() => sendMessage(s)}
-                className="text-xs bg-card border border-border rounded-full px-3 py-1.5 text-muted-foreground hover:text-foreground hover:border-primary/50 transition-all"
-              >
-                {s}
-              </button>
-            ))}
-          </div>
-        )}
-
         {/* Input */}
         <div className="border-t border-border p-3 flex gap-2 bg-card">
           <input
@@ -165,11 +128,11 @@ export default function AIAssistant() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-            placeholder="Digite sua dúvida..."
+            placeholder="Digite sua dúvida para a Elo4h..."
             className="flex-1 bg-muted rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
           />
           <button
-            onClick={() => sendMessage()}
+            onClick={sendMessage}
             disabled={!input.trim() || loading}
             className="w-10 h-10 rounded-xl bg-primary text-primary-foreground flex items-center justify-center disabled:opacity-40 hover:opacity-90 transition-all"
           >
