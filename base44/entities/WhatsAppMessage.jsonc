@@ -35,6 +35,11 @@
     "is_ai_response": {
       "type": "boolean",
       "title": "Resposta da IA"
+    },
+    "whatsapp_line": {
+      "type": "string",
+      "title": "Linha WhatsApp",
+      "description": "Identificador do n\u00famero/linha WhatsApp"
     }
   },
   "required": [

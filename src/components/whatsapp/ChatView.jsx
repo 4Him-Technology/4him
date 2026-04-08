@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { base44 } from "@/api/base44Client";
 import moment from "moment";
 
-export default function ChatView({ messages, contactName, contactPhone, onMessageSent }) {
+export default function ChatView({ messages, contactName, contactPhone, whatsappLine, onMessageSent }) {
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
 
@@ -20,6 +20,7 @@ export default function ChatView({ messages, contactName, contactPhone, onMessag
       direction: "outgoing",
       status: "sent",
       is_ai_response: false,
+      whatsapp_line: whatsappLine || "Principal",
     });
     setText("");
     setSending(false);
