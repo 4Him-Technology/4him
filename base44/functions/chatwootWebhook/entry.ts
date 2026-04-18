@@ -1,32 +1,37 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
-// This endpoint receives webhook events from Chatwoot
-// Configure in Chatwoot: Settings → Integrations → Webhooks → Add new webhook
-// Events to subscribe: conversation_created, conversation_updated, message_created
-
 Deno.serve(async (req) => {
-  // Validate it's a POST from Chatwoot
   if (req.method !== "POST") {
     return Response.json({ error: "Method not allowed" }, { status: 405 });
   }
 
-  const body = await req.json();
-  const { event, conversation, messages } = body;
+  const rawBody = await req.text();
 
-  // Use service role since this is called by Chatwoot, not a logged-in user
+  // Validate Chatwoot webhook secret if configured
+  const secret = Deno.env.get("CHATWOOT_WEBHOOK_SECRET");
+  if (secret) {
+    const signature = req.headers.get("x-chatwoot-signature") || req.headers.get("x-hub-signature-256") || "";
+    const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+    const sigBuffer = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(rawBody));
+    const expected = "sha256=" + Array.from(new Uint8Array(sigBuffer)).map(b => b.toString(16).padStart(2, "0")).join("");
+    if (signature !== expected) {
+      return Response.json({ error: "Invalid signature" }, { status: 401 });
+    }
+  }
+
+  const body = JSON.parse(rawBody);
+  const { event, conversation } = body;
+
   const base44 = createClientFromRequest(req);
 
   try {
     if (event === "message_created" && body.message_type !== "activity") {
-      const msg = body;
       const sender = conversation?.meta?.sender;
-
-      // Save/update the message in our local entity so the frontend reacts in real time
       await base44.asServiceRole.entities.WhatsAppMessage.create({
         contact_name: sender?.name || "Desconhecido",
         contact_phone: sender?.phone_number || "",
-        message: msg.content || "",
-        direction: msg.message_type === 1 ? "outgoing" : "incoming",
+        message: body.content || "",
+        direction: body.message_type === 1 ? "outgoing" : "incoming",
         status: "received",
         is_ai_response: false,
         whatsapp_line: String(conversation?.id || ""),
@@ -34,8 +39,6 @@ Deno.serve(async (req) => {
     }
 
     if (event === "conversation_created" || event === "conversation_updated") {
-      // Just trigger a "ping" so the frontend knows to refresh the conversation list
-      // We store a minimal marker using the conversation id as the phone
       const sender = conversation?.meta?.sender;
       await base44.asServiceRole.entities.WhatsAppMessage.create({
         contact_name: sender?.name || "Desconhecido",
