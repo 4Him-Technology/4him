@@ -21,22 +21,14 @@ Deno.serve(async (req) => {
   if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
-  const { action, account_id, conversation_id, message, page } = body;
+  const { action, account_id, conversation_id, contact_id, message, page, query, status, label, data: payload } = body;
 
-  if (action === "getAccounts") {
-    const data = await chatwootFetch("/auth/sign_in", {
-      method: "POST",
-      body: JSON.stringify({ email: "", password: "" }),
-    });
-    // Get accounts via profile
-    const profile = await chatwootFetch("/api/v1/profile");
-    const accounts = profile.account_id ? [{ id: profile.account_id }] : [];
-    return Response.json({ accounts, profile });
-  }
-
+  // ───── CONVERSATIONS ─────
   if (action === "getConversations") {
-    const p = page || 1;
-    const data = await chatwootFetch(`/api/v1/accounts/${account_id}/conversations?page=${p}`);
+    const params = new URLSearchParams({ page: page || 1 });
+    if (status) params.set("status", status);
+    if (label) params.set("labels[]", label);
+    const data = await chatwootFetch(`/api/v1/accounts/${account_id}/conversations?${params}`);
     return Response.json(data);
   }
 
@@ -56,9 +48,94 @@ Deno.serve(async (req) => {
   if (action === "toggleStatus") {
     const data = await chatwootFetch(`/api/v1/accounts/${account_id}/conversations/${conversation_id}/toggle_status`, {
       method: "POST",
-      body: JSON.stringify({ status: body.status }),
+      body: JSON.stringify({ status }),
     });
     return Response.json(data);
+  }
+
+  if (action === "updateConversationLabel") {
+    const data = await chatwootFetch(`/api/v1/accounts/${account_id}/conversations/${conversation_id}/labels`, {
+      method: "POST",
+      body: JSON.stringify({ labels: payload }),
+    });
+    return Response.json(data);
+  }
+
+  if (action === "assignConversation") {
+    const data = await chatwootFetch(`/api/v1/accounts/${account_id}/conversations/${conversation_id}/assignments`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+    return Response.json(data);
+  }
+
+  // ───── CONTACTS ─────
+  if (action === "getContacts") {
+    const params = new URLSearchParams({ page: page || 1 });
+    if (query) params.set("q", query);
+    const data = await chatwootFetch(`/api/v1/accounts/${account_id}/contacts/search?${params}`);
+    return Response.json(data);
+  }
+
+  if (action === "getContact") {
+    const data = await chatwootFetch(`/api/v1/accounts/${account_id}/contacts/${contact_id}`);
+    return Response.json(data);
+  }
+
+  if (action === "createContact") {
+    const data = await chatwootFetch(`/api/v1/accounts/${account_id}/contacts`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+    return Response.json(data);
+  }
+
+  if (action === "updateContact") {
+    const data = await chatwootFetch(`/api/v1/accounts/${account_id}/contacts/${contact_id}`, {
+      method: "PUT",
+      body: JSON.stringify(payload),
+    });
+    return Response.json(data);
+  }
+
+  if (action === "deleteContact") {
+    const data = await chatwootFetch(`/api/v1/accounts/${account_id}/contacts/${contact_id}`, {
+      method: "DELETE",
+    });
+    return Response.json(data);
+  }
+
+  if (action === "getContactConversations") {
+    const data = await chatwootFetch(`/api/v1/accounts/${account_id}/contacts/${contact_id}/conversations`);
+    return Response.json(data);
+  }
+
+  // ───── LABELS ─────
+  if (action === "getLabels") {
+    const data = await chatwootFetch(`/api/v1/accounts/${account_id}/labels`);
+    return Response.json(data);
+  }
+
+  // ───── TEAMS / AGENTS ─────
+  if (action === "getAgents") {
+    const data = await chatwootFetch(`/api/v1/accounts/${account_id}/agents`);
+    return Response.json(data);
+  }
+
+  if (action === "getTeams") {
+    const data = await chatwootFetch(`/api/v1/accounts/${account_id}/teams`);
+    return Response.json(data);
+  }
+
+  // ───── REPORTS / OVERVIEW ─────
+  if (action === "getOverview") {
+    const data = await chatwootFetch(`/api/v1/accounts/${account_id}/reports/overview`);
+    return Response.json(data);
+  }
+
+  if (action === "getProfile") {
+    const profile = await chatwootFetch(`/api/v1/profile`);
+    return Response.json(profile);
   }
 
   return Response.json({ error: "Action not found" }, { status: 400 });
