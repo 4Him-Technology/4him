@@ -11,11 +11,11 @@ const navItems = [
   { path: "/", label: "Dashboard", icon: LayoutDashboard },
   { path: "/agendamentos", label: "Agendamentos", icon: Calendar },
   { path: "/whatsapp", label: "WhatsApp", icon: MessageSquare },
+  { path: "/leads", label: "Leads / Kanban", icon: Kanban },
   { path: "/pacientes", label: "Pacientes", icon: Users },
   { path: "/configuracoes", label: "Configurações", icon: Settings },
   { path: "/usuarios", label: "Usuários", icon: UserCog },
   { path: "/financeiro", label: "Financeiro", icon: BarChart2 },
-  { path: "/leads", label: "Leads / Kanban", icon: Kanban },
   { path: "/assistente", label: "Fale com a Elo4h", icon: BotMessageSquare },
 ];
 
