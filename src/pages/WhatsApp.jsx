@@ -1,58 +1,68 @@
-import { useEffect } from "react";
-import { ExternalLink, MessageCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { base44 } from "@/api/base44Client";
+import { Loader2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ConversationList from "@/components/whatsapp/ConversationList";
+import MessageView from "@/components/whatsapp/MessageView";
+
+const ACCOUNT_ID = 1;
 
 export default function WhatsApp() {
+  const [conversations, setConversations] = useState([]);
+  const [selected, setSelected] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    // Injeta o script do Chatwoot
-    window.chatwootSettings = {
-      hideMessageBubble: false,
-      position: "right",
-      locale: "pt_BR",
-      type: "standard",
-    };
-
-    const script = document.createElement("script");
-    script.src = "https://forhim-chatwoot.cloudfy.live/packs/js/sdk.js";
-    script.async = true;
-    script.defer = true;
-    script.onload = () => {
-      window.chatwootSDK?.run({
-        websiteToken: "Fa4YdSQm1fvayt2dk6F9DHva",
-        baseUrl: "https://forhim-chatwoot.cloudfy.live",
-      });
-    };
-    document.body.appendChild(script);
-
-    return () => {
-      // Cleanup ao sair da página
-      document.body.removeChild(script);
-      const bubble = document.getElementById("chatwoot-widget");
-      if (bubble) bubble.remove();
-      // Remove elementos do Chatwoot do DOM
-      document.querySelectorAll('[class*="chatwoot"]').forEach(el => el.remove());
-    };
+    loadConversations();
   }, []);
 
+  async function loadConversations() {
+    setLoading(true);
+    const res = await base44.functions.invoke("chatwoot", {
+      action: "getConversations",
+      account_id: ACCOUNT_ID,
+      page: 1,
+    });
+    const list = res.data?.data?.payload || [];
+    setConversations(list);
+    setLoading(false);
+  }
+
   return (
-    <div className="flex flex-col items-center justify-center h-full min-h-[500px] gap-6 text-center p-8">
-      <div className="bg-green-100 rounded-full p-6">
-        <MessageCircle className="w-16 h-16 text-green-600" />
+    <div className="flex flex-col h-[calc(100vh-8rem)]">
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-bold">WhatsApp / Atendimentos</h1>
+        <Button variant="outline" size="sm" onClick={loadConversations} className="gap-2">
+          <RefreshCw className="w-4 h-4" />
+          Atualizar
+        </Button>
       </div>
-      <div>
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">Chatwoot Integrado</h2>
-        <p className="text-gray-500 max-w-md">
-          O widget do Chatwoot está ativo nesta página. Clique no ícone de chat no canto inferior direito para abrir as conversas.
-        </p>
-      </div>
-      <Button
-        variant="outline"
-        className="gap-2"
-        onClick={() => window.open("https://forhim-chatwoot.cloudfy.live", "_blank")}
-      >
-        <ExternalLink className="w-4 h-4" />
-        Abrir Chatwoot em nova aba
-      </Button>
+
+      {loading ? (
+        <div className="flex-1 flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+        </div>
+      ) : (
+        <div className="flex flex-1 rounded-xl border border-border overflow-hidden shadow-sm">
+          {/* Lista de conversas */}
+          <div className="w-80 shrink-0">
+            <ConversationList
+              conversations={conversations}
+              selectedId={selected?.id}
+              onSelect={setSelected}
+            />
+          </div>
+
+          {/* Mensagens */}
+          <div className="flex-1">
+            <MessageView
+              conversation={selected}
+              accountId={ACCOUNT_ID}
+              onStatusChange={loadConversations}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
