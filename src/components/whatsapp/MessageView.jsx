@@ -6,31 +6,49 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { base44 } from "@/api/base44Client";
 
+const MSG_POLL_INTERVAL = 10000; // 10 seconds
+
 export default function MessageView({ conversation, accountId, onStatusChange }) {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
   const bottomRef = useRef(null);
+  const pollRef = useRef(null);
 
   useEffect(() => {
     if (!conversation) return;
-    loadMessages();
+    loadMessages(true);
+
+    // Poll messages every 10s for the open conversation
+    pollRef.current = setInterval(() => loadMessages(false), MSG_POLL_INTERVAL);
+
+    // Also react to webhook events via WhatsAppMessage subscribe
+    const unsubscribe = base44.entities.WhatsAppMessage.subscribe((event) => {
+      if (event.data?.whatsapp_line === String(conversation.id)) {
+        loadMessages(false);
+      }
+    });
+
+    return () => {
+      clearInterval(pollRef.current);
+      unsubscribe();
+    };
   }, [conversation?.id]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  async function loadMessages() {
-    setLoading(true);
+  async function loadMessages(showLoading = false) {
+    if (showLoading) setLoading(true);
     const res = await base44.functions.invoke("chatwoot", {
       action: "getMessages",
       account_id: accountId,
       conversation_id: conversation.id,
     });
     setMessages(res.data?.payload || []);
-    setLoading(false);
+    if (showLoading) setLoading(false);
   }
 
   async function sendMessage() {
