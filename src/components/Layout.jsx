@@ -27,7 +27,7 @@ const lawNavItems = [
   { path: "/advocacia/clientes", label: "Clientes", icon: Users },
   { path: "/advocacia/processos", label: "Processos & Agenda", icon: GanttChart },
   { path: "/advocacia/financeiro", label: "Financeiro", icon: BarChart2 },
-  { path: "/advocacia/assistente", label: "Fale com a Lex", icon: BotMessageSquare },
+  { path: "/advocacia/assistente", label: "Fale com a Elo4h", icon: BotMessageSquare },
 ];
 
 function NavLink({ item, isActive, onClick, collapsed }) {
