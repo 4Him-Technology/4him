@@ -1,152 +1,141 @@
-import { useState, useRef, useEffect } from "react";
-import { Send, Bot, Sparkles, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import ReactMarkdown from "react-markdown";
+import ConversationSidebar from "@/components/assistant/ConversationSidebar";
+import ChatArea from "@/components/assistant/ChatArea";
 
 export default function AIAssistant() {
-  const MOCK_MESSAGES = [
-    { role: "user", content: "Oi Elo4h! Quais convênios a clínica aceita?" },
-    { role: "assistant", content: "Olá! 😊 A clínica aceita os seguintes convênios:\n\n- **Unimed**\n- **Bradesco Saúde**\n- **SulAmérica**\n- **Amil**\n- **Hapvida**\n- **Particular**\n\nSe o paciente tiver algum convênio diferente, recomendo verificar com a gerência antes de confirmar o agendamento." },
-    { role: "user", content: "Como faço para remarcar uma consulta?" },
-    { role: "assistant", content: "Para remarcar uma consulta, siga estes passos:\n\n1. Acesse a aba **Agendamentos** no menu lateral\n2. Localize o paciente pelo nome ou telefone\n3. Clique em **Editar** na consulta desejada\n4. Altere a data e horário disponível\n5. Salve as alterações\n\nO paciente deverá ser notificado pelo WhatsApp sobre a remarcação. Posso te ajudar com mais alguma coisa?" },
-  ];
-
-  const [conversation, setConversation] = useState(null);
-  const [messages, setMessages] = useState(MOCK_MESSAGES);
+  const [conversations, setConversations] = useState([]);
+  const [activeConversation, setActiveConversation] = useState(null);
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [starting, setStarting] = useState(false);
-  const bottomRef = useRef(null);
+  const [loadingList, setLoadingList] = useState(true);
 
+  // Load conversation list on mount
   useEffect(() => {
-    const init = async () => {
+    loadConversationList();
+  }, []);
+
+  async function loadConversationList() {
+    setLoadingList(true);
+    try {
+      const list = await base44.agents.listConversations({ agent_name: "elo4h" });
+      setConversations(list || []);
+    } catch (e) {
+      setConversations([]);
+    }
+    setLoadingList(false);
+  }
+
+  async function handleNewConversation() {
+    setStarting(true);
+    setMessages([]);
+    setActiveConversation(null);
+    try {
       const conv = await base44.agents.createConversation({
         agent_name: "elo4h",
-        metadata: { name: "Conversa com Elo4h" },
+        metadata: { name: "Nova conversa" },
       });
-      setConversation(conv);
+      setActiveConversation(conv);
       setMessages(conv.messages || []);
-      setStarting(false);
+      setConversations((prev) => [conv, ...prev]);
 
       base44.agents.subscribeToConversation(conv.id, (data) => {
         setMessages(data.messages || []);
       });
-    };
-    init();
-  }, []);
+    } catch (e) {
+      console.error(e);
+    }
+    setStarting(false);
+  }
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  async function handleSelectConversation(conv) {
+    setStarting(true);
+    setMessages([]);
+    setActiveConversation(conv);
+    try {
+      const fullConv = await base44.agents.getConversation(conv.id);
+      setMessages(fullConv.messages || []);
 
-  const sendMessage = async () => {
+      base44.agents.subscribeToConversation(conv.id, (data) => {
+        setMessages(data.messages || []);
+      });
+    } catch (e) {
+      setMessages([]);
+    }
+    setStarting(false);
+  }
+
+  async function handleDeleteConversation(convId) {
+    try {
+      await base44.agents.deleteConversation(convId);
+      setConversations((prev) => prev.filter((c) => c.id !== convId));
+      if (activeConversation?.id === convId) {
+        setActiveConversation(null);
+        setMessages([]);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async function sendMessage() {
     const text = input.trim();
-    if (!text || loading || !conversation) return;
+    if (!text || loading) return;
+
+    // If no active conversation, create one first
+    let conv = activeConversation;
+    if (!conv) {
+      setStarting(true);
+      try {
+        conv = await base44.agents.createConversation({
+          agent_name: "elo4h",
+          metadata: { name: text.slice(0, 40) },
+        });
+        setActiveConversation(conv);
+        setConversations((prev) => [conv, ...prev]);
+        base44.agents.subscribeToConversation(conv.id, (data) => {
+          setMessages(data.messages || []);
+        });
+      } catch (e) {
+        setStarting(false);
+        return;
+      }
+      setStarting(false);
+    }
+
     setInput("");
     setLoading(true);
-    await base44.agents.addMessage(conversation, { role: "user", content: text });
+    try {
+      await base44.agents.addMessage(conv, { role: "user", content: text });
+    } catch (e) {
+      console.error(e);
+    }
     setLoading(false);
-  };
-
-  if (starting) {
-    return (
-      <div className="flex items-center justify-center h-64 gap-3 text-muted-foreground">
-        <Loader2 className="w-5 h-5 animate-spin" />
-        <span className="text-sm">Iniciando Elo4h...</span>
-      </div>
-    );
   }
 
   return (
-    <div className="max-w-3xl mx-auto space-y-4">
-      {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-          <Sparkles className="w-5 h-5 text-primary-foreground" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Fale com a Elo4h</h1>
-          <p className="text-sm text-muted-foreground">Assistente de IA para colaboradores</p>
-        </div>
-        <span className="ml-auto flex items-center gap-1.5 text-xs text-emerald-600 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full font-medium">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          Online
-        </span>
-      </div>
+    <div className="flex h-[calc(100vh-8rem)] rounded-xl border border-border overflow-hidden shadow-sm">
+      {/* Sidebar */}
+      <ConversationSidebar
+        conversations={conversations}
+        activeId={activeConversation?.id}
+        onSelect={handleSelectConversation}
+        onNew={handleNewConversation}
+        onDelete={handleDeleteConversation}
+        loading={loadingList}
+      />
 
-      {/* Chat box */}
-      <div className="bg-muted/30 border border-border rounded-2xl overflow-hidden flex flex-col h-[65vh]">
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {messages.length === 0 && (
-            <div className="flex flex-col items-center justify-center h-full text-center gap-3 text-muted-foreground">
-              <Bot className="w-12 h-12 opacity-30" />
-              <p className="text-sm">Olá! Sou a <strong>Elo4h</strong>, sua assistente virtual.<br />Como posso te ajudar hoje?</p>
-            </div>
-          )}
-          {messages.map((msg, i) => {
-            const isUser = msg.role === "user";
-            return (
-              <div key={i} className={`flex gap-3 ${isUser ? "justify-end" : "justify-start"}`}>
-                {!isUser && (
-                  <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0 mt-1">
-                    <Bot className="w-4 h-4 text-primary-foreground" />
-                  </div>
-                )}
-                <div
-                  className={`max-w-[78%] rounded-2xl px-4 py-3 text-sm ${
-                    isUser
-                      ? "bg-primary text-primary-foreground rounded-br-sm"
-                      : "bg-card border border-border text-foreground rounded-bl-sm"
-                  }`}
-                >
-                  {isUser ? (
-                    <p>{msg.content}</p>
-                  ) : (
-                    <ReactMarkdown className="prose prose-sm max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
-                      {msg.content}
-                    </ReactMarkdown>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-          {loading && (
-            <div className="flex gap-3 justify-start">
-              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0">
-                <Bot className="w-4 h-4 text-primary-foreground" />
-              </div>
-              <div className="bg-card border border-border rounded-2xl rounded-bl-sm px-4 py-3">
-                <div className="flex gap-1 items-center h-4">
-                  <span className="w-2 h-2 rounded-full bg-muted-foreground/40 animate-bounce" style={{ animationDelay: "0ms" }} />
-                  <span className="w-2 h-2 rounded-full bg-muted-foreground/40 animate-bounce" style={{ animationDelay: "150ms" }} />
-                  <span className="w-2 h-2 rounded-full bg-muted-foreground/40 animate-bounce" style={{ animationDelay: "300ms" }} />
-                </div>
-              </div>
-            </div>
-          )}
-          <div ref={bottomRef} />
-        </div>
-
-        {/* Input */}
-        <div className="border-t border-border p-3 flex gap-2 bg-card">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-            placeholder="Digite sua dúvida para a Elo4h..."
-            className="flex-1 bg-muted rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
-          />
-          <button
-            onClick={sendMessage}
-            disabled={!input.trim() || loading}
-            className="w-10 h-10 rounded-xl bg-primary text-primary-foreground flex items-center justify-center disabled:opacity-40 hover:opacity-90 transition-all"
-          >
-            <Send className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
+      {/* Chat */}
+      <ChatArea
+        messages={messages}
+        input={input}
+        setInput={setInput}
+        onSend={sendMessage}
+        loading={loading}
+        starting={starting}
+      />
     </div>
   );
 }
