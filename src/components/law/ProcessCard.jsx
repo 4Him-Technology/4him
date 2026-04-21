@@ -68,15 +68,15 @@ export default function ProcessCard({ processo, onLink }) {
 
           {/* Actions */}
           <div className="flex items-center gap-2 shrink-0">
-            {processo.url_externo && (
+            {processo.numero && (
               <a
-                href={processo.url_externo}
+                href={`https://www.jusbrasil.com.br/consulta-processual/busca?q=${encodeURIComponent(processo.numero)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-lg text-muted-foreground hover:text-amber-700 hover:bg-amber-50 transition-colors"
-                title="Ver no tribunal"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 transition-colors"
+                title="Abrir no JusBrasil"
               >
-                <ExternalLink className="w-4 h-4" />
+                <ExternalLink className="w-3.5 h-3.5" /> JusBrasil
               </a>
             )}
             <Button
