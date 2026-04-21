@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Calendar, MessageSquare, Users, Settings, UserCog, Menu, ChevronLeft, ChevronRight, BarChart2, Kanban, BotMessageSquare } from "lucide-react";
+import { LayoutDashboard, Calendar, MessageSquare, Users, Settings, UserCog, Menu, ChevronLeft, ChevronRight, BarChart2, Kanban, BotMessageSquare, Scale, Briefcase, GanttChart } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -17,6 +17,14 @@ const navItems = [
   { path: "/usuarios", label: "Usuários", icon: UserCog },
   { path: "/financeiro", label: "Financeiro", icon: BarChart2 },
   { path: "/assistente", label: "Fale com a Elo4h", icon: BotMessageSquare },
+];
+
+const lawNavItems = [
+  { path: "/advocacia/dashboard", label: "Dashboard Jurídico", icon: Scale },
+  { path: "/advocacia/clientes", label: "Clientes", icon: Users },
+  { path: "/advocacia/processos", label: "Processos & Agenda", icon: GanttChart },
+  { path: "/advocacia/financeiro", label: "Financeiro", icon: BarChart2 },
+  { path: "/advocacia/assistente", label: "Fale com a Lex", icon: BotMessageSquare },
 ];
 
 function NavLink({ item, isActive, onClick, collapsed }) {
@@ -88,8 +96,25 @@ export default function Layout() {
         </div>
 
         {/* Navigation */}
-        <nav className="relative z-10 flex-1 px-3 py-4 space-y-1">
+        <nav className="relative z-10 flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           {navItems.map((item) => {
+            const isActive = location.pathname === item.path;
+            return (
+              <NavLink key={item.path} item={item} isActive={isActive} onClick={() => setMobileOpen(false)} collapsed={collapsed} />
+            );
+          })}
+
+          {/* Divisor Advocacia */}
+          <div className="pt-3 pb-1">
+            {!collapsed ? (
+              <p className="text-[9px] uppercase tracking-widest text-white/25 px-2 pb-1 flex items-center gap-1">
+                <Scale className="w-3 h-3" /> Advocacia
+              </p>
+            ) : (
+              <div className="border-t border-white/10 my-1" />
+            )}
+          </div>
+          {lawNavItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
               <NavLink key={item.path} item={item} isActive={isActive} onClick={() => setMobileOpen(false)} collapsed={collapsed} />

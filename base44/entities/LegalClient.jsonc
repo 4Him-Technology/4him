@@ -1,0 +1,77 @@
+{
+  "name": "LegalClient",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string",
+      "title": "Nome Completo"
+    },
+    "phone": {
+      "type": "string",
+      "title": "Telefone"
+    },
+    "email": {
+      "type": "string",
+      "title": "E-mail"
+    },
+    "cpf_cnpj": {
+      "type": "string",
+      "title": "CPF / CNPJ"
+    },
+    "date_of_birth": {
+      "type": "string",
+      "format": "date",
+      "title": "Data de Nascimento"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "Pessoa F\u00edsica",
+        "Pessoa Jur\u00eddica"
+      ],
+      "title": "Tipo"
+    },
+    "area": {
+      "type": "string",
+      "enum": [
+        "C\u00edvel",
+        "Criminal",
+        "Trabalhista",
+        "Fam\u00edlia",
+        "Tribut\u00e1rio",
+        "Empresarial",
+        "Previdenci\u00e1rio",
+        "Outro"
+      ],
+      "title": "\u00c1rea Jur\u00eddica"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "Indica\u00e7\u00e3o",
+        "Site",
+        "WhatsApp",
+        "Presencial",
+        "Redes Sociais"
+      ],
+      "title": "Origem"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Ativo",
+        "Inativo",
+        "Encerrado"
+      ],
+      "title": "Status"
+    },
+    "notes": {
+      "type": "string",
+      "title": "Observa\u00e7\u00f5es"
+    }
+  },
+  "required": [
+    "full_name",
+    "phone"
+  ]
+}

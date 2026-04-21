@@ -15,6 +15,11 @@ import UserManagement from './pages/UserManagement';
 import FinancialAnalysis from './pages/FinancialAnalysis';
 import Leads from './pages/Leads';
 import AIAssistant from './pages/AIAssistant';
+import LawDashboard from './pages/law/LawDashboard';
+import LawClients from './pages/law/LawClients';
+import LawCases from './pages/law/LawCases';
+import LawFinancial from './pages/law/LawFinancial';
+import LawAssistant from './pages/law/LawAssistant';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -52,6 +57,12 @@ const AuthenticatedApp = () => {
         <Route path="/financeiro" element={<FinancialAnalysis />} />
         <Route path="/leads" element={<Leads />} />
         <Route path="/assistente" element={<AIAssistant />} />
+        {/* Módulo Advocacia */}
+        <Route path="/advocacia/dashboard" element={<LawDashboard />} />
+        <Route path="/advocacia/clientes" element={<LawClients />} />
+        <Route path="/advocacia/processos" element={<LawCases />} />
+        <Route path="/advocacia/financeiro" element={<LawFinancial />} />
+        <Route path="/advocacia/assistente" element={<LawAssistant />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>
     </Routes>
