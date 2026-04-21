@@ -1,13 +1,16 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Calendar, MessageSquare, Users, Settings, UserCog, Menu, ChevronLeft, ChevronRight, BarChart2, Kanban, BotMessageSquare, Scale, Briefcase, GanttChart } from "lucide-react";
+import {
+  LayoutDashboard, Calendar, MessageSquare, Users, Settings, UserCog,
+  Menu, ChevronLeft, ChevronRight, BarChart2, Kanban, BotMessageSquare,
+  Scale, GanttChart, ChevronDown, Stethoscope
+} from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 const LOGO_URL = "https://media.base44.com/images/public/69d05d38b40549791975d990/834173352_w2.png";
 const LOGO_MINI = "https://media.base44.com/images/public/69d05d38b40549791975d990/42c26ab70_poih.png";
-const STONE_BG = "https://media.base44.com/images/public/69d05d38b40549791975d990/8508442db_generated_image.png";
 
-const navItems = [
+const clinicNavItems = [
   { path: "/", label: "Dashboard", icon: LayoutDashboard },
   { path: "/agendamentos", label: "Agendamentos", icon: Calendar },
   { path: "/whatsapp", label: "WhatsApp", icon: MessageSquare },
@@ -20,7 +23,7 @@ const navItems = [
 ];
 
 const lawNavItems = [
-  { path: "/advocacia/dashboard", label: "Dashboard Jurídico", icon: Scale },
+  { path: "/advocacia/dashboard", label: "Dashboard Jurídico", icon: LayoutDashboard },
   { path: "/advocacia/clientes", label: "Clientes", icon: Users },
   { path: "/advocacia/processos", label: "Processos & Agenda", icon: GanttChart },
   { path: "/advocacia/financeiro", label: "Financeiro", icon: BarChart2 },
@@ -39,7 +42,7 @@ function NavLink({ item, isActive, onClick, collapsed }) {
       title={collapsed ? item.label : undefined}
       className={cn(
         "flex items-center gap-3 rounded-lg text-sm font-medium transition-all duration-200",
-        collapsed ? "px-3 py-2.5 justify-center" : "px-3 py-2.5"
+        collapsed ? "px-3 py-2.5 justify-center" : "px-3 py-2.5 pl-6"
       )}
       style={{
         color: highlight ? '#96682c' : 'rgba(255,255,255,0.65)',
@@ -50,6 +53,54 @@ function NavLink({ item, isActive, onClick, collapsed }) {
       <item.icon className="w-4 h-4 shrink-0" />
       {!collapsed && item.label}
     </Link>
+  );
+}
+
+function NavGroup({ label, icon: Icon, items, location, onLinkClick, collapsed }) {
+  const isGroupActive = items.some(i => location.pathname === i.path);
+  const [open, setOpen] = useState(isGroupActive);
+
+  return (
+    <div>
+      <button
+        onClick={() => setOpen(o => !o)}
+        title={collapsed ? label : undefined}
+        className={cn(
+          "w-full flex items-center gap-3 rounded-lg text-sm font-semibold transition-all duration-200 px-3 py-2.5",
+          collapsed ? "justify-center" : "justify-between"
+        )}
+        style={{
+          color: isGroupActive ? '#96682c' : 'rgba(255,255,255,0.75)',
+          backgroundColor: isGroupActive ? 'rgba(150,104,44,0.1)' : 'transparent',
+        }}
+      >
+        <div className="flex items-center gap-3">
+          <Icon className="w-4 h-4 shrink-0" />
+          {!collapsed && <span>{label}</span>}
+        </div>
+        {!collapsed && (
+          <ChevronDown className={cn("w-3.5 h-3.5 transition-transform duration-200", open ? "rotate-180" : "")} />
+        )}
+      </button>
+
+      {open && !collapsed && (
+        <div className="mt-0.5 space-y-0.5">
+          {items.map(item => {
+            const isActive = location.pathname === item.path;
+            return <NavLink key={item.path} item={item} isActive={isActive} onClick={onLinkClick} collapsed={false} />;
+          })}
+        </div>
+      )}
+
+      {open && collapsed && (
+        <div className="mt-0.5 space-y-0.5">
+          {items.map(item => {
+            const isActive = location.pathname === item.path;
+            return <NavLink key={item.path} item={item} isActive={isActive} onClick={onLinkClick} collapsed={true} />;
+          })}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -74,7 +125,6 @@ export default function Layout() {
         )}
         style={{ backgroundColor: '#000000' }}
       >
-        {/* Subtle dark overlay for depth */}
         <div className="absolute inset-0 bg-black/30 z-0" />
 
         {/* Toggle button */}
@@ -97,29 +147,25 @@ export default function Layout() {
 
         {/* Navigation */}
         <nav className="relative z-10 flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-          {navItems.map((item) => {
-            const isActive = location.pathname === item.path;
-            return (
-              <NavLink key={item.path} item={item} isActive={isActive} onClick={() => setMobileOpen(false)} collapsed={collapsed} />
-            );
-          })}
-
-          {/* Divisor Advocacia */}
-          <div className="pt-3 pb-1">
-            {!collapsed ? (
-              <p className="text-[9px] uppercase tracking-widest text-white/25 px-2 pb-1 flex items-center gap-1">
-                <Scale className="w-3 h-3" /> Advocacia
-              </p>
-            ) : (
-              <div className="border-t border-white/10 my-1" />
-            )}
+          <NavGroup
+            label="Clínica Médica"
+            icon={Stethoscope}
+            items={clinicNavItems}
+            location={location}
+            onLinkClick={() => setMobileOpen(false)}
+            collapsed={collapsed}
+          />
+          <div className="py-1">
+            <div className="border-t border-white/10" />
           </div>
-          {lawNavItems.map((item) => {
-            const isActive = location.pathname === item.path;
-            return (
-              <NavLink key={item.path} item={item} isActive={isActive} onClick={() => setMobileOpen(false)} collapsed={collapsed} />
-            );
-          })}
+          <NavGroup
+            label="Advocacia"
+            icon={Scale}
+            items={lawNavItems}
+            location={location}
+            onLinkClick={() => setMobileOpen(false)}
+            collapsed={collapsed}
+          />
         </nav>
 
         {/* Footer */}
