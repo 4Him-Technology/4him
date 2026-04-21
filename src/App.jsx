@@ -20,6 +20,7 @@ import LawClients from './pages/law/LawClients';
 import LawCases from './pages/law/LawCases';
 import LawFinancial from './pages/law/LawFinancial';
 import LawAssistant from './pages/law/LawAssistant';
+import LawDocuments from './pages/law/LawDocuments';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -63,6 +64,7 @@ const AuthenticatedApp = () => {
         <Route path="/advocacia/processos" element={<LawCases />} />
         <Route path="/advocacia/financeiro" element={<LawFinancial />} />
         <Route path="/advocacia/assistente" element={<LawAssistant />} />
+        <Route path="/advocacia/pecas" element={<LawDocuments />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>
     </Routes>
