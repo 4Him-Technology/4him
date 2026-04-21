@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -40,8 +41,15 @@ function FileIcon({ type }) {
 }
 
 export default function LawDocuments() {
-  const initialTab = new URLSearchParams(window.location.search).get("tab") || "nova";
-  const [tab, setTab] = useState(initialTab); // "nova" | "criadas"
+  const location = useLocation();
+  const urlTab = new URLSearchParams(location.search).get("tab") || "nova";
+  const [tab, setTab] = useState(urlTab); // "nova" | "criadas" | "criadas-detail"
+
+  useEffect(() => {
+    const t = new URLSearchParams(location.search).get("tab") || "nova";
+    if (t === "nova") { setTab("nova"); setStep("form"); setPecaSelecionada(null); }
+    else if (t === "criadas") { setTab("criadas"); setPecaSelecionada(null); }
+  }, [location.search]);
   const [step, setStep] = useState("form"); // "form" | "result"
   const [tipoPeca, setTipoPeca] = useState("");
   const [clientName, setClientName] = useState("");
@@ -221,25 +229,16 @@ Use linguagem jurídica formal e precisa. Formate o documento com markdown para 
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="flex rounded-xl border border-border bg-muted/40 p-1 gap-1">
-          <button
-            onClick={() => { setTab("nova"); setStep("form"); }}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${tab === "nova" ? "bg-white shadow-sm text-amber-800 border border-border" : "text-muted-foreground hover:text-foreground"}`}
-          >
-            <Plus className="w-4 h-4" /> Nova Peça
-          </button>
-          <button
-            onClick={() => { setTab("criadas"); setPecaSelecionada(null); }}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${(tab === "criadas" || tab === "criadas-detail") ? "bg-white shadow-sm text-amber-800 border border-border" : "text-muted-foreground hover:text-foreground"}`}
-          >
-            <FileText className="w-4 h-4" /> Peças Criadas
-            {pecasSalvas.length > 0 && (
-              <span className="ml-1 bg-amber-700 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
-                {pecasSalvas.length}
-              </span>
-            )}
-          </button>
+        {/* Indicador da tela atual */}
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <span className="font-medium text-foreground">
+            {tab === "nova" ? "Nova Peça" : "Peças Criadas"}
+          </span>
+          {(tab === "criadas" || tab === "criadas-detail") && pecasSalvas.length > 0 && (
+            <span className="bg-amber-700 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">
+              {pecasSalvas.length}
+            </span>
+          )}
         </div>
       </div>
 
