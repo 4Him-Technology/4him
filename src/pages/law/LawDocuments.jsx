@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -54,8 +54,20 @@ export default function LawDocuments() {
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState("");
   const [pecasSalvas, setPecasSalvas] = useState([]);
+  const [loadingPecas, setLoadingPecas] = useState(false);
   const [pecaSelecionada, setPecaSelecionada] = useState(null);
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    loadPecas();
+  }, []);
+
+  async function loadPecas() {
+    setLoadingPecas(true);
+    const docs = await base44.entities.LegalDocument.list("-created_date");
+    setPecasSalvas(docs);
+    setLoadingPecas(false);
+  }
 
   function handleFileSelect(e) {
     const selected = Array.from(e.target.files);
@@ -117,13 +129,11 @@ Use linguagem jurídica formal e precisa. Formate o documento com markdown para 
 
       const texto = typeof response === "string" ? response : JSON.stringify(response);
       setResultado(texto);
-      const novaPeca = {
-        id: Date.now(),
+      const novaPeca = await base44.entities.LegalDocument.create({
         tipo: tipoPeca,
         cliente: clientName,
         texto,
-        criadaEm: new Date().toLocaleString("pt-BR"),
-      };
+      });
       setPecasSalvas((prev) => [novaPeca, ...prev]);
       setStep("result");
     } catch (e) {
@@ -179,14 +189,22 @@ Use linguagem jurídica formal e precisa. Formate o documento com markdown para 
     setPecaSelecionada(peca);
     setResultado(peca.texto);
     setTipoPeca(peca.tipo);
-    setClientName(peca.cliente);
+    setClientName(peca.cliente || "");
     setEditando(false);
     setTab("criadas-detail");
   }
 
-  function handleDeletarPecaSalva(id) {
+  async function handleDeletarPecaSalva(id) {
+    await base44.entities.LegalDocument.delete(id);
     setPecasSalvas((prev) => prev.filter((p) => p.id !== id));
-    if (pecaSelecionada?.id === id) setPecaSelecionada(null);
+    if (pecaSelecionada?.id === id) { setPecaSelecionada(null); setTab("criadas"); }
+  }
+
+  async function handleSalvarEdicao() {
+    if (!pecaSelecionada) return;
+    await base44.entities.LegalDocument.update(pecaSelecionada.id, { texto: resultado });
+    setPecasSalvas((prev) => prev.map(p => p.id === pecaSelecionada.id ? { ...p, texto: resultado } : p));
+    setPecaSelecionada(prev => ({ ...prev, texto: resultado }));
   }
 
   return (
@@ -228,7 +246,11 @@ Use linguagem jurídica formal e precisa. Formate o documento com markdown para 
       {/* Tab: Peças Criadas - Lista */}
       {tab === "criadas" && (
         <div className="space-y-3">
-          {pecasSalvas.length === 0 ? (
+          {loadingPecas ? (
+            <div className="flex items-center justify-center py-16 gap-3 text-muted-foreground">
+              <Loader2 className="w-5 h-5 animate-spin" /> Carregando peças...
+            </div>
+          ) : pecasSalvas.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-center gap-3">
               <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center">
                 <FileText className="w-7 h-7 text-muted-foreground" />
@@ -253,7 +275,7 @@ Use linguagem jurídica formal e precisa. Formate o documento com markdown para 
                   <div className="min-w-0">
                     <p className="font-medium text-foreground text-sm">{peca.tipo}</p>
                     <p className="text-xs text-muted-foreground truncate">
-                      {peca.cliente || "Sem cliente"} · {peca.criadaEm}
+                      {peca.cliente || "Sem cliente"} · {peca.created_date ? new Date(peca.created_date).toLocaleString("pt-BR") : ""}
                     </p>
                   </div>
                 </div>

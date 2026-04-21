@@ -1,0 +1,22 @@
+{
+  "name": "LegalDocument",
+  "type": "object",
+  "properties": {
+    "tipo": {
+      "type": "string",
+      "title": "Tipo de Pe\u00e7a"
+    },
+    "cliente": {
+      "type": "string",
+      "title": "Cliente"
+    },
+    "texto": {
+      "type": "string",
+      "title": "Texto da Pe\u00e7a"
+    }
+  },
+  "required": [
+    "tipo",
+    "texto"
+  ]
+}
