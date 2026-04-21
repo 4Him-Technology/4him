@@ -27,6 +27,9 @@ const lawNavItems = [
   { path: "/advocacia/clientes", label: "Clientes", icon: Users },
   { path: "/advocacia/processos", label: "Processos & Agenda", icon: GanttChart },
   { path: "/advocacia/financeiro", label: "Financeiro", icon: BarChart2 },
+];
+
+const pecasSubItems = [
   { path: "/advocacia/pecas", label: "Peças Jurídicas", icon: ScrollText },
   { path: "/advocacia/assistente", label: "Fale com a Elo4h", icon: BotMessageSquare },
 ];
@@ -57,7 +60,46 @@ function NavLink({ item, isActive, onClick, collapsed }) {
   );
 }
 
-function NavGroup({ label, icon: Icon, items, location, onLinkClick, collapsed }) {
+function NavSubGroup({ label, icon: Icon, items, location, onLinkClick, collapsed }) {
+  const isActive = items.some(i => location.pathname === i.path);
+  const [open, setOpen] = useState(isActive);
+
+  return (
+    <div>
+      <button
+        onClick={() => setOpen(o => !o)}
+        title={collapsed ? label : undefined}
+        className={cn(
+          "w-full flex items-center gap-3 rounded-lg text-sm font-medium transition-all duration-200 px-3 py-2.5",
+          collapsed ? "justify-center" : "pl-6 justify-between"
+        )}
+        style={{
+          color: isActive ? '#96682c' : 'rgba(255,255,255,0.65)',
+          backgroundColor: isActive ? 'rgba(150,104,44,0.15)' : 'transparent',
+          border: isActive ? '1px solid rgba(150,104,44,0.3)' : '1px solid transparent',
+        }}
+      >
+        <div className="flex items-center gap-3">
+          <Icon className="w-4 h-4 shrink-0" />
+          {!collapsed && <span>{label}</span>}
+        </div>
+        {!collapsed && (
+          <ChevronDown className={cn("w-3.5 h-3.5 transition-transform duration-200", open ? "rotate-180" : "")} />
+        )}
+      </button>
+      {open && (
+        <div className="mt-0.5 space-y-0.5">
+          {items.map(item => {
+            const active = location.pathname === item.path;
+            return <NavLink key={item.path} item={item} isActive={active} onClick={onLinkClick} collapsed={collapsed} />;
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function NavGroup({ label, icon: Icon, items, location, onLinkClick, collapsed, extraContent }) {
   const isGroupActive = items.some(i => location.pathname === i.path);
   const [open, setOpen] = useState(isGroupActive);
 
@@ -84,21 +126,13 @@ function NavGroup({ label, icon: Icon, items, location, onLinkClick, collapsed }
         )}
       </button>
 
-      {open && !collapsed && (
+      {open && (
         <div className="mt-0.5 space-y-0.5">
           {items.map(item => {
             const isActive = location.pathname === item.path;
-            return <NavLink key={item.path} item={item} isActive={isActive} onClick={onLinkClick} collapsed={false} />;
+            return <NavLink key={item.path} item={item} isActive={isActive} onClick={onLinkClick} collapsed={collapsed} />;
           })}
-        </div>
-      )}
-
-      {open && collapsed && (
-        <div className="mt-0.5 space-y-0.5">
-          {items.map(item => {
-            const isActive = location.pathname === item.path;
-            return <NavLink key={item.path} item={item} isActive={isActive} onClick={onLinkClick} collapsed={true} />;
-          })}
+          {extraContent}
         </div>
       )}
     </div>
@@ -166,6 +200,16 @@ export default function Layout() {
             location={location}
             onLinkClick={() => setMobileOpen(false)}
             collapsed={collapsed}
+            extraContent={
+              <NavSubGroup
+                label="Peças Jurídicas"
+                icon={ScrollText}
+                items={pecasSubItems}
+                location={location}
+                onLinkClick={() => setMobileOpen(false)}
+                collapsed={collapsed}
+              />
+            }
           />
         </nav>
 
