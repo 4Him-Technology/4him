@@ -40,6 +40,7 @@ function FileIcon({ type }) {
 }
 
 export default function LawDocuments() {
+  const [tab, setTab] = useState("nova"); // "nova" | "criadas"
   const [step, setStep] = useState("form"); // "form" | "result"
   const [tipoPeca, setTipoPeca] = useState("");
   const [clientName, setClientName] = useState("");
@@ -51,6 +52,8 @@ export default function LawDocuments() {
   const [editando, setEditando] = useState(false);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState("");
+  const [pecasSalvas, setPecasSalvas] = useState([]);
+  const [pecaSelecionada, setPecaSelecionada] = useState(null);
   const fileInputRef = useRef(null);
 
   function handleFileSelect(e) {
@@ -111,7 +114,16 @@ Use linguagem jurídica formal e precisa. Formate o documento com markdown para 
         model: "claude_sonnet_4_6",
       });
 
-      setResultado(typeof response === "string" ? response : JSON.stringify(response));
+      const texto = typeof response === "string" ? response : JSON.stringify(response);
+      setResultado(texto);
+      const novaPeca = {
+        id: Date.now(),
+        tipo: tipoPeca,
+        cliente: clientName,
+        texto,
+        criadaEm: new Date().toLocaleString("pt-BR"),
+      };
+      setPecasSalvas((prev) => [novaPeca, ...prev]);
       setStep("result");
     } catch (e) {
       setError("Erro ao gerar a peça: " + e.message);
@@ -159,22 +171,176 @@ Use linguagem jurídica formal e precisa. Formate o documento com markdown para 
     setClientName("");
     setTipoPeca("");
     setError("");
+    setTab("nova");
+  }
+
+  function handleAbrirPecaSalva(peca) {
+    setPecaSelecionada(peca);
+    setResultado(peca.texto);
+    setTipoPeca(peca.tipo);
+    setClientName(peca.cliente);
+    setEditando(false);
+    setTab("criadas-detail");
+  }
+
+  function handleDeletarPecaSalva(id) {
+    setPecasSalvas((prev) => prev.filter((p) => p.id !== id));
+    if (pecaSelecionada?.id === id) setPecaSelecionada(null);
   }
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-amber-700/10 flex items-center justify-center">
-          <FileText className="w-5 h-5 text-amber-700" />
+      {/* Header + Tabs */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-amber-700/10 flex items-center justify-center">
+            <FileText className="w-5 h-5 text-amber-700" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Peças Jurídicas</h1>
+            <p className="text-sm text-muted-foreground">IA especializada para criação de documentos jurídicos</p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Gerador de Peças Jurídicas</h1>
-          <p className="text-sm text-muted-foreground">IA especializada para criação de documentos jurídicos</p>
+
+        {/* Tabs */}
+        <div className="flex rounded-xl border border-border bg-muted/40 p-1 gap-1">
+          <button
+            onClick={() => { setTab("nova"); setStep("form"); }}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${tab === "nova" ? "bg-white shadow-sm text-amber-800 border border-border" : "text-muted-foreground hover:text-foreground"}`}
+          >
+            <Plus className="w-4 h-4" /> Nova Peça
+          </button>
+          <button
+            onClick={() => { setTab("criadas"); setPecaSelecionada(null); }}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${(tab === "criadas" || tab === "criadas-detail") ? "bg-white shadow-sm text-amber-800 border border-border" : "text-muted-foreground hover:text-foreground"}`}
+          >
+            <FileText className="w-4 h-4" /> Peças Criadas
+            {pecasSalvas.length > 0 && (
+              <span className="ml-1 bg-amber-700 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                {pecasSalvas.length}
+              </span>
+            )}
+          </button>
         </div>
       </div>
 
-      {step === "form" && (
+      {/* Tab: Peças Criadas - Lista */}
+      {tab === "criadas" && (
+        <div className="space-y-3">
+          {pecasSalvas.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-20 text-center gap-3">
+              <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center">
+                <FileText className="w-7 h-7 text-muted-foreground" />
+              </div>
+              <p className="font-medium text-foreground">Nenhuma peça criada ainda</p>
+              <p className="text-sm text-muted-foreground">Gere sua primeira peça na aba "Nova Peça"</p>
+              <Button onClick={() => setTab("nova")} variant="outline" className="gap-2 mt-2">
+                <Plus className="w-4 h-4" /> Criar primeira peça
+              </Button>
+            </div>
+          ) : (
+            pecasSalvas.map((peca) => (
+              <div
+                key={peca.id}
+                className="flex items-center justify-between gap-4 bg-card border border-border rounded-xl px-5 py-4 hover:shadow-sm transition-shadow cursor-pointer group"
+                onClick={() => handleAbrirPecaSalva(peca)}
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-9 h-9 rounded-lg bg-amber-700/10 flex items-center justify-center shrink-0">
+                    <FileText className="w-4 h-4 text-amber-700" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-medium text-foreground text-sm">{peca.tipo}</p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {peca.cliente || "Sem cliente"} · {peca.criadaEm}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <Button size="sm" variant="ghost" className="gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Eye className="w-3.5 h-3.5" /> Abrir
+                  </Button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handleDeletarPecaSalva(peca.id); }}
+                    className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
+      {/* Tab: Peça Criada aberta */}
+      {tab === "criadas-detail" && pecaSelecionada && (
+        <div className="space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 bg-card rounded-xl border border-border px-5 py-3">
+            <div className="flex items-center gap-3">
+              <button onClick={() => { setTab("criadas"); setPecaSelecionada(null); }} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <ChevronLeft className="w-4 h-4" /> Peças Criadas
+              </button>
+              <div className="w-px h-4 bg-border" />
+              <Badge className="bg-amber-100 text-amber-800 border-0">{tipoPeca}</Badge>
+              {clientName && <span className="text-sm text-muted-foreground">· {clientName}</span>}
+            </div>
+            <div className="flex gap-2 items-center">
+              <div className="flex rounded-lg border border-border overflow-hidden text-sm">
+                <button onClick={() => setEditando(false)} className={`flex items-center gap-1.5 px-3 py-1.5 transition-colors ${!editando ? "bg-amber-700 text-white" : "bg-card text-muted-foreground hover:bg-muted"}`}>
+                  <Eye className="w-3.5 h-3.5" /> Visualizar
+                </button>
+                <button onClick={() => setEditando(true)} className={`flex items-center gap-1.5 px-3 py-1.5 transition-colors ${editando ? "bg-amber-700 text-white" : "bg-card text-muted-foreground hover:bg-muted"}`}>
+                  <Pencil className="w-3.5 h-3.5" /> Editar
+                </button>
+              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="gap-1.5">
+                    <MoreHorizontal className="w-4 h-4" /> Ações <ChevronDown className="w-3 h-3 opacity-60" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={handleCopy} className="gap-2 cursor-pointer">
+                    {copied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
+                    {copied ? "Copiado!" : "Copiar texto"}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleDownload} className="gap-2 cursor-pointer">
+                    <Download className="w-4 h-4" /> Baixar .txt
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => handleDeletarPecaSalva(pecaSelecionada.id)} className="gap-2 cursor-pointer text-destructive focus:text-destructive">
+                    <Trash2 className="w-4 h-4" /> Excluir peça
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+          <div className="bg-white rounded-xl border border-border shadow-sm min-h-[60vh]">
+            {editando ? (
+              <div className="p-2">
+                <div className="flex items-center gap-2 px-4 py-2 border-b border-border mb-2">
+                  <Pencil className="w-3.5 h-3.5 text-amber-700" />
+                  <span className="text-xs text-muted-foreground">Modo edição — altere o texto livremente</span>
+                </div>
+                <Textarea value={resultado} onChange={(e) => setResultado(e.target.value)} className="w-full min-h-[65vh] font-mono text-sm border-0 shadow-none focus-visible:ring-0 resize-none p-6 leading-relaxed" />
+              </div>
+            ) : (
+              <div className="px-10 py-12 max-w-4xl mx-auto">
+                <div className="text-center mb-8 pb-6 border-b border-border/50">
+                  <div className="inline-flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 rounded-full px-3 py-1 mb-4">
+                    <FileText className="w-3 h-3" /> {tipoPeca} {clientName ? `· ${clientName}` : ""}
+                  </div>
+                </div>
+                <div className="prose prose-sm max-w-none text-foreground whitespace-pre-wrap text-sm leading-relaxed font-serif">{resultado}</div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {tab === "nova" && step === "form" && (
+
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           {/* Left - Inputs */}
           <div className="lg:col-span-3 space-y-5">
@@ -314,7 +480,7 @@ Use linguagem jurídica formal e precisa. Formate o documento com markdown para 
         </div>
       )}
 
-      {step === "result" && (
+      {tab === "nova" && step === "result" && (
         <div className="space-y-4">
           {/* Toolbar */}
           <div className="flex flex-wrap items-center justify-between gap-3 bg-card rounded-xl border border-border px-5 py-3">
