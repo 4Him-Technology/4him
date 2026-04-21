@@ -40,7 +40,8 @@ function FileIcon({ type }) {
 }
 
 export default function LawDocuments() {
-  const [tab, setTab] = useState("nova"); // "nova" | "criadas"
+  const initialTab = new URLSearchParams(window.location.search).get("tab") || "nova";
+  const [tab, setTab] = useState(initialTab); // "nova" | "criadas"
   const [step, setStep] = useState("form"); // "form" | "result"
   const [tipoPeca, setTipoPeca] = useState("");
   const [clientName, setClientName] = useState("");

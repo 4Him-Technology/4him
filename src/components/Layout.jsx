@@ -2,7 +2,7 @@ import { Outlet, Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard, Calendar, MessageSquare, Users, Settings, UserCog,
   Menu, ChevronLeft, ChevronRight, BarChart2, Kanban, BotMessageSquare,
-  Scale, GanttChart, ChevronDown, Stethoscope, ScrollText
+  Scale, GanttChart, ChevronDown, Stethoscope, ScrollText, Plus
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -27,11 +27,12 @@ const lawNavItems = [
   { path: "/advocacia/clientes", label: "Clientes", icon: Users },
   { path: "/advocacia/processos", label: "Processos & Agenda", icon: GanttChart },
   { path: "/advocacia/financeiro", label: "Financeiro", icon: BarChart2 },
+  { path: "/advocacia/assistente", label: "Fale com a Elo4h", icon: BotMessageSquare },
 ];
 
 const pecasSubItems = [
-  { path: "/advocacia/pecas", label: "Peças Jurídicas", icon: ScrollText },
-  { path: "/advocacia/assistente", label: "Fale com a Elo4h", icon: BotMessageSquare },
+  { path: "/advocacia/pecas?tab=nova", label: "Nova Peça", icon: Plus },
+  { path: "/advocacia/pecas?tab=criadas", label: "Peças Criadas", icon: ScrollText },
 ];
 
 function NavLink({ item, isActive, onClick, collapsed }) {
@@ -61,7 +62,7 @@ function NavLink({ item, isActive, onClick, collapsed }) {
 }
 
 function NavSubGroup({ label, icon: Icon, items, location, onLinkClick, collapsed }) {
-  const isActive = items.some(i => location.pathname === i.path);
+  const isActive = items.some(i => location.pathname === i.path.split("?")[0]);
   const [open, setOpen] = useState(isActive);
 
   return (
