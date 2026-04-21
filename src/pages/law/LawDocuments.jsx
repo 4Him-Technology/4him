@@ -42,15 +42,8 @@ function FileIcon({ type }) {
 
 export default function LawDocuments() {
   const location = useLocation();
-  const urlTab = new URLSearchParams(location.search).get("tab") || "nova";
-  const [tab, setTab] = useState(urlTab); // "nova" | "criadas" | "criadas-detail"
-
-  useEffect(() => {
-    const t = new URLSearchParams(location.search).get("tab") || "nova";
-    if (t === "nova") { setTab("nova"); setStep("form"); setPecaSelecionada(null); }
-    else if (t === "criadas") { setTab("criadas"); setPecaSelecionada(null); }
-  }, [location.search]);
-  const [step, setStep] = useState("form"); // "form" | "result"
+  const [tab, setTab] = useState(() => new URLSearchParams(location.search).get("tab") || "nova");
+  const [step, setStep] = useState("form");
   const [tipoPeca, setTipoPeca] = useState("");
   const [clientName, setClientName] = useState("");
   const [contexto, setContexto] = useState("");
@@ -65,6 +58,12 @@ export default function LawDocuments() {
   const [loadingPecas, setLoadingPecas] = useState(false);
   const [pecaSelecionada, setPecaSelecionada] = useState(null);
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    const t = new URLSearchParams(location.search).get("tab") || "nova";
+    if (t === "nova") { setTab("nova"); setStep("form"); setPecaSelecionada(null); }
+    else if (t === "criadas") { setTab("criadas"); setPecaSelecionada(null); }
+  }, [location.search]);
 
   useEffect(() => {
     loadPecas();
