@@ -26,6 +26,7 @@ export default function LawSearch() {
     const typeLabel = {
       numero: `número do processo "${query}"`,
       parte: `parte/nome "${query}"`,
+      cpf: `CPF ou CNPJ "${query}" (busque processos vinculados a este documento)`,
       assunto: `assunto/tema "${query}"`,
     }[searchType];
 
@@ -112,6 +113,7 @@ Retorne EXATAMENTE neste formato:
   const searchTypes = [
     { value: "numero", label: "Nº do Processo", icon: Hash },
     { value: "parte", label: "Nome da Parte", icon: User },
+    { value: "cpf", label: "CPF / CNPJ", icon: User },
     { value: "assunto", label: "Assunto / Tema", icon: FileText },
   ];
 
@@ -161,6 +163,8 @@ Retorne EXATAMENTE neste formato:
                   ? "Ex: 1234567-89.2024.8.26.0100"
                   : searchType === "parte"
                   ? "Ex: Carlos Eduardo Mendonça"
+                  : searchType === "cpf"
+                  ? "Ex: 123.456.789-00 ou 12.345.678/0001-90"
                   : "Ex: indenização por danos morais, trabalhista"
               }
               className="pl-10 h-11 text-sm"
