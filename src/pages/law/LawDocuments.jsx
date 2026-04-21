@@ -6,8 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenuSeparator, DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import {
   FileText, Upload, X, Loader2, Wand2, Download, Copy, Trash2,
-  Image, FileAudio, File, Plus, ChevronLeft
+  Image, FileAudio, File, Plus, ChevronLeft, Pencil, Eye,
+  ChevronDown, Check, MoreHorizontal
 } from "lucide-react";
 
 const TIPOS_PECA = [
@@ -43,6 +48,8 @@ export default function LawDocuments() {
   const [files, setFiles] = useState([]);
   const [generating, setGenerating] = useState(false);
   const [resultado, setResultado] = useState("");
+  const [editando, setEditando] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [error, setError] = useState("");
   const fileInputRef = useRef(null);
 
@@ -114,6 +121,8 @@ Use linguagem jurídica formal e precisa. Formate o documento com markdown para 
 
   function handleCopy() {
     navigator.clipboard.writeText(resultado);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   }
 
   function handleDownload() {
@@ -126,9 +135,24 @@ Use linguagem jurídica formal e precisa. Formate o documento com markdown para 
     URL.revokeObjectURL(url);
   }
 
+  function handleDownloadDocx() {
+    const content = resultado
+      .split("\n")
+      .map((line) => line.trim())
+      .join("\n");
+    const blob = new Blob([content], { type: "application/msword" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${tipoPeca || "peca-juridica"}.doc`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   function handleReset() {
     setStep("form");
     setResultado("");
+    setEditando(false);
     setFiles([]);
     setContexto("");
     setInstrucoes("");
@@ -292,7 +316,7 @@ Use linguagem jurídica formal e precisa. Formate o documento com markdown para 
 
       {step === "result" && (
         <div className="space-y-4">
-          {/* Result toolbar */}
+          {/* Toolbar */}
           <div className="flex flex-wrap items-center justify-between gap-3 bg-card rounded-xl border border-border px-5 py-3">
             <div className="flex items-center gap-3">
               <button onClick={handleReset} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
@@ -302,26 +326,79 @@ Use linguagem jurídica formal e precisa. Formate o documento com markdown para 
               <Badge className="bg-amber-100 text-amber-800 border-0">{tipoPeca}</Badge>
               {clientName && <span className="text-sm text-muted-foreground">· {clientName}</span>}
             </div>
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={handleCopy} className="gap-1.5">
-                <Copy className="w-3.5 h-3.5" /> Copiar
-              </Button>
-              <Button variant="outline" size="sm" onClick={handleDownload} className="gap-1.5">
-                <Download className="w-3.5 h-3.5" /> Baixar
-              </Button>
-              <Button variant="outline" size="sm" onClick={handleReset} className="gap-1.5 text-destructive hover:text-destructive">
-                <Trash2 className="w-3.5 h-3.5" /> Descartar
-              </Button>
+
+            <div className="flex gap-2 items-center">
+              {/* Toggle edit/view */}
+              <div className="flex rounded-lg border border-border overflow-hidden text-sm">
+                <button
+                  onClick={() => setEditando(false)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 transition-colors ${!editando ? "bg-amber-700 text-white" : "bg-card text-muted-foreground hover:bg-muted"}`}
+                >
+                  <Eye className="w-3.5 h-3.5" /> Visualizar
+                </button>
+                <button
+                  onClick={() => setEditando(true)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 transition-colors ${editando ? "bg-amber-700 text-white" : "bg-card text-muted-foreground hover:bg-muted"}`}
+                >
+                  <Pencil className="w-3.5 h-3.5" /> Editar
+                </button>
+              </div>
+
+              {/* Actions dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="gap-1.5">
+                    <MoreHorizontal className="w-4 h-4" /> Ações <ChevronDown className="w-3 h-3 opacity-60" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={handleCopy} className="gap-2 cursor-pointer">
+                    {copied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
+                    {copied ? "Copiado!" : "Copiar texto"}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleDownload} className="gap-2 cursor-pointer">
+                    <Download className="w-4 h-4" /> Baixar .txt
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleDownloadDocx} className="gap-2 cursor-pointer">
+                    <FileText className="w-4 h-4" /> Baixar .doc
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleReset} className="gap-2 cursor-pointer text-destructive focus:text-destructive">
+                    <Trash2 className="w-4 h-4" /> Descartar peça
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
 
-          {/* Document */}
-          <div className="bg-white rounded-xl border border-border shadow-sm">
-            <div className="px-8 py-10 max-w-4xl mx-auto">
-              <div className="prose prose-sm max-w-none text-foreground whitespace-pre-wrap font-mono text-sm leading-relaxed">
-                {resultado}
+          {/* Document area */}
+          <div className="bg-white rounded-xl border border-border shadow-sm min-h-[60vh]">
+            {editando ? (
+              <div className="p-2">
+                <div className="flex items-center gap-2 px-4 py-2 border-b border-border mb-2">
+                  <Pencil className="w-3.5 h-3.5 text-amber-700" />
+                  <span className="text-xs text-muted-foreground">Modo edição — altere o texto livremente</span>
+                </div>
+                <Textarea
+                  value={resultado}
+                  onChange={(e) => setResultado(e.target.value)}
+                  className="w-full min-h-[65vh] font-mono text-sm border-0 shadow-none focus-visible:ring-0 resize-none p-6 leading-relaxed"
+                />
               </div>
-            </div>
+            ) : (
+              <div className="px-10 py-12 max-w-4xl mx-auto">
+                {/* Document header decoration */}
+                <div className="text-center mb-8 pb-6 border-b border-border/50">
+                  <div className="inline-flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 rounded-full px-3 py-1 mb-4">
+                    <FileText className="w-3 h-3" />
+                    {tipoPeca} {clientName ? `· ${clientName}` : ""}
+                  </div>
+                </div>
+                <div className="prose prose-sm max-w-none text-foreground whitespace-pre-wrap text-sm leading-relaxed font-serif">
+                  {resultado}
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="flex justify-center">
