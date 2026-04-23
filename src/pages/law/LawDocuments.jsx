@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import {
   FileText, Upload, X, Loader2, Wand2,
-  Image, FileAudio, File, Plus, Eye, Trash2
+  Image, FileAudio, File, Plus, Eye, Trash2, User, ChevronDown
 } from "lucide-react";
 import DocumentEditor from "@/components/law/DocumentEditor";
 
@@ -42,6 +42,10 @@ export default function LawDocuments() {
   const [step, setStep] = useState("form");
   const [tipoPeca, setTipoPeca] = useState("");
   const [clientName, setClientName] = useState("");
+  const [clientId, setClientId] = useState("");
+  const [clientSearch, setClientSearch] = useState("");
+  const [showClientDropdown, setShowClientDropdown] = useState(false);
+  const [clients, setClients] = useState([]);
   const [contexto, setContexto] = useState("");
   const [instrucoes, setInstrucoes] = useState("");
   const [files, setFiles] = useState([]);
@@ -63,6 +67,7 @@ export default function LawDocuments() {
 
   useEffect(() => {
     loadPecas();
+    base44.entities.LegalClient.list("-created_date", 500).then(setClients);
   }, []);
 
   async function loadPecas() {
@@ -135,6 +140,7 @@ Use linguagem jurídica formal e precisa. Formate o documento com markdown para 
       const novaPeca = await base44.entities.LegalDocument.create({
         tipo: tipoPeca,
         cliente: clientName,
+        client_id: clientId || undefined,
         texto,
       });
       setPecasSalvas((prev) => [novaPeca, ...prev]);
@@ -183,6 +189,8 @@ Use linguagem jurídica formal e precisa. Formate o documento com markdown para 
     setContexto("");
     setInstrucoes("");
     setClientName("");
+    setClientId("");
+    setClientSearch("");
     setTipoPeca("");
     setError("");
     setTab("nova");
@@ -328,12 +336,75 @@ Use linguagem jurídica formal e precisa. Formate o documento com markdown para 
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Nome do Cliente</label>
-                <Input
-                  placeholder="Ex: Carlos Eduardo Mendonça"
-                  value={clientName}
-                  onChange={(e) => setClientName(e.target.value)}
-                />
+                <label className="text-sm font-medium text-foreground">Cliente</label>
+                <div className="relative">
+                  <div
+                    className="flex h-9 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm cursor-pointer hover:bg-muted/30 transition-colors"
+                    onClick={() => setShowClientDropdown(!showClientDropdown)}
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      <User className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                      <span className={clientName ? "text-foreground truncate" : "text-muted-foreground"}>
+                        {clientName || "Selecione ou busque um cliente..."}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1 shrink-0">
+                      {clientName && (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setClientName(""); setClientId(""); setClientSearch(""); }}
+                          className="text-muted-foreground hover:text-destructive transition-colors p-0.5"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                      <ChevronDown className="w-4 h-4 text-muted-foreground opacity-50" />
+                    </div>
+                  </div>
+
+                  {showClientDropdown && (
+                    <div className="absolute z-50 top-full mt-1 w-full bg-popover border border-border rounded-md shadow-lg">
+                      <div className="p-2 border-b border-border">
+                        <Input
+                          placeholder="Buscar cliente..."
+                          value={clientSearch}
+                          onChange={(e) => setClientSearch(e.target.value)}
+                          autoFocus
+                          className="h-8 text-sm"
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      </div>
+                      <div className="max-h-48 overflow-y-auto p-1">
+                        {clients
+                          .filter(c => c.full_name?.toLowerCase().includes(clientSearch.toLowerCase()))
+                          .slice(0, 20)
+                          .map(c => (
+                            <button
+                              key={c.id}
+                              className="w-full text-left px-3 py-2 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors flex flex-col gap-0.5"
+                              onClick={() => {
+                                setClientName(c.full_name);
+                                setClientId(c.id);
+                                setClientSearch("");
+                                setShowClientDropdown(false);
+                              }}
+                            >
+                              <span className="font-medium">{c.full_name}</span>
+                              {c.phone && <span className="text-[11px] text-muted-foreground">{c.phone}</span>}
+                            </button>
+                          ))
+                        }
+                        {clients.filter(c => c.full_name?.toLowerCase().includes(clientSearch.toLowerCase())).length === 0 && (
+                          <p className="text-xs text-muted-foreground text-center py-3">Nenhum cliente encontrado</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Fechar dropdown ao clicar fora */}
+                {showClientDropdown && (
+                  <div className="fixed inset-0 z-40" onClick={() => setShowClientDropdown(false)} />
+                )}
               </div>
 
               <div className="space-y-2">

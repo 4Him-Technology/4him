@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Search, Trash2, Edit2, Phone, Mail, Briefcase } from "lucide-react";
+import { Plus, Search, Trash2, Edit2, Phone, Mail, Briefcase, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import LawClientModal from "@/components/law/LawClientModal";
+import { Link } from "react-router-dom";
 
 const sourceColors = {
   "Indicação": "bg-teal-100 text-teal-700",
@@ -27,18 +28,21 @@ const areaColors = {
 export default function LawClients() {
   const [clients, setClients] = useState([]);
   const [cases, setCases] = useState([]);
+  const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
 
   const load = async () => {
-    const [cl, cs] = await Promise.all([
+    const [cl, cs, docs] = await Promise.all([
       base44.entities.LegalClient.list("-created_date", 500),
       base44.entities.LegalCase.list("-date", 500),
+      base44.entities.LegalDocument.list("-created_date", 500),
     ]);
     setClients(cl);
     setCases(cs);
+    setDocuments(docs);
     setLoading(false);
   };
 
@@ -86,6 +90,7 @@ export default function LawClients() {
         )}
         {filtered.map(c => {
           const clientCases = cases.filter(cs => cs.client_phone === c.phone || cs.client_name === c.full_name).sort((a, b) => b.date?.localeCompare(a.date));
+          const clientDocs = documents.filter(d => d.client_id === c.id);
           return (
             <div key={c.id} className="bg-card rounded-xl border border-border p-4 hover:shadow-md transition-shadow">
               <div className="flex items-start justify-between mb-3">
@@ -149,6 +154,31 @@ export default function LawClients() {
                         )}>{cs.status}</span>
                       </div>
                     ))}
+                  </div>
+                </div>
+              )}
+
+              {clientDocs.length > 0 && (
+                <div className="mt-3 pt-3 border-t border-border/50">
+                  <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+                    Peças ({clientDocs.length})
+                  </p>
+                  <div className="space-y-1">
+                    {clientDocs.slice(0, 2).map((doc, i) => (
+                      <Link
+                        key={i}
+                        to={`/advocacia/pecas?tab=criadas`}
+                        className="flex items-center gap-2 text-xs text-muted-foreground hover:text-amber-700 transition-colors group"
+                      >
+                        <FileText className="w-3 h-3 shrink-0 group-hover:text-amber-700" />
+                        <span className="truncate">{doc.tipo}</span>
+                      </Link>
+                    ))}
+                    {clientDocs.length > 2 && (
+                      <Link to="/advocacia/pecas?tab=criadas" className="text-[10px] text-amber-700 hover:underline">
+                        + {clientDocs.length - 2} mais
+                      </Link>
+                    )}
                   </div>
                 </div>
               )}
