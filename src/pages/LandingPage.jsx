@@ -6,7 +6,11 @@ import {
   Mail, MapPin, Globe, Menu, X, ChevronUp, MessageCircle,
 } from "lucide-react";
 
-const LOGO_URL = "https://media.base44.com/images/public/69d05d38b40549791975d990/834173352_w2.png";
+// H isolado (transparente) — nav, hero monograma
+const LOGO_ICON_URL = "https://raw.githubusercontent.com/APSIS-Filipe/4him/main/public/images/logo-icon.png";
+// Horizontal completo (transparente) — footer, menu mobile
+const LOGO_FULL_URL = "https://raw.githubusercontent.com/APSIS-Filipe/4him/main/public/images/logo-full.png";
+
 const WHATSAPP_URL = "https://wa.me/5511999999999"; // substituir pelo número real
 
 /* ═══════════════════════════════════════════════════════════════
@@ -247,16 +251,8 @@ export default function LandingPage() {
         >
           {/* Menu header */}
           <div className="flex items-center justify-between" style={{ padding: "20px 24px" }}>
-            <div className="flex items-center gap-3">
-              <img src={LOGO_URL} alt="4Him Technology" className="h-9 w-auto" />
-              <div>
-                <div className="font-bold text-sm" style={{ color: "#f5f0e8", letterSpacing: "-0.01em" }}>
-                  4Him<span style={{ color: "#c49a3c" }}>.</span>
-                </div>
-                <div className="text-[8px] font-medium uppercase -mt-0.5" style={{ letterSpacing: "0.2em", color: "rgba(245,240,232,0.45)" }}>
-                  Technology
-                </div>
-              </div>
+            <div className="flex items-center">
+              <img src={LOGO_FULL_URL} alt="4Him Technology" className="h-10 w-auto" />
             </div>
             <button
               onClick={() => setMenuOpen(false)}
@@ -338,7 +334,7 @@ export default function LandingPage() {
       >
         {/* Logo */}
         <div className="flex items-center gap-3">
-          <img src={LOGO_URL} alt="4Him Technology" className="h-9 w-auto" />
+          <img src={LOGO_ICON_URL} alt="4Him Technology" className="h-9 w-auto" />
           <div className="hidden sm:block">
             <div className="text-sm font-bold" style={{ color: "#f5f0e8", letterSpacing: "-0.01em" }}>
               4Him<span style={{ color: "#c49a3c" }}>.</span>
@@ -551,7 +547,7 @@ export default function LandingPage() {
                 filter: "drop-shadow(0 40px 80px rgba(0,0,0,0.9)) drop-shadow(0 0 60px rgba(196,154,60,0.35))",
               }}
             >
-              <img src={LOGO_URL} alt="" className="w-full h-full object-contain" />
+              <img src={LOGO_ICON_URL} alt="" className="w-full h-full object-contain" />
             </div>
 
             {[
@@ -1209,16 +1205,13 @@ export default function LandingPage() {
         <div className="mx-auto" style={{ maxWidth: 1560 }}>
           <div className="grid gap-12 md:grid-cols-[2fr_1fr_1fr_1fr]" style={{ marginBottom: 48 }}>
             <div>
-              <div className="flex items-center gap-3" style={{ marginBottom: 16 }}>
-                <img src={LOGO_URL} alt="" className="h-10 w-auto" />
-                <div>
-                  <div className="font-bold" style={{ fontSize: 16, color: "#f5f0e8" }}>4Him Technology</div>
-                  <div
-                    className="uppercase"
-                    style={{ fontSize: 9, letterSpacing: "0.22em", color: "rgba(245,240,232,0.4)" }}
-                  >
-                    Consultoria em IA
-                  </div>
+              <div style={{ marginBottom: 16 }}>
+                <img src={LOGO_FULL_URL} alt="4Him Technology" className="h-12 w-auto" style={{ marginBottom: 4 }} />
+                <div
+                  className="uppercase"
+                  style={{ fontSize: 9, letterSpacing: "0.22em", color: "rgba(245,240,232,0.4)" }}
+                >
+                  Consultoria em IA
                 </div>
               </div>
               <p style={{ fontSize: 13, lineHeight: 1.7, color: "rgba(245,240,232,0.5)", maxWidth: 360 }}>
