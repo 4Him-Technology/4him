@@ -559,10 +559,12 @@ export default function LandingPage() {
             </div>
 
             {[
-              { text: "Atendimento 24h",         x: -160, y: 20,  delay: 0 },
-              { text: "Multicanal",              x: 220,  y: -40, delay: 1 },
-              { text: "Agenda integrada",        x: 220,  y: 200, delay: 2 },
-              { text: "Dashboard em tempo real", x: -220, y: 220, delay: 1.5 },
+              { text: "Atendimento 24h",       x: -260, y: -90,  delay: 0   },
+              { text: "Follow-up automático",  x: -272, y:  50,  delay: 0.7 },
+              { text: "Dashboard ao vivo",     x: -258, y: 190,  delay: 1.5 },
+              { text: "Multicanal",            x:  202, y: -90,  delay: 1.2 },
+              { text: "Agenda integrada",      x:  202, y:  50,  delay: 2.0 },
+              { text: "Qualificação de leads", x:  198, y: 190,  delay: 2.5 },
             ].map((b, i) => (
               <div
                 key={i}
