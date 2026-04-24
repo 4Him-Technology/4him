@@ -76,9 +76,9 @@ const AuthenticatedApp = () => {
         <Route path="/advocacia/relatorios" element={<LawReports />} />
         <Route path="/advocacia/pecas-processuais" element={<LawDocumentTemplates />} />
         <Route path="/advocacia/linha-do-tempo" element={<LawTimeline />} />
-        <Route path="/landing" element={<LandingPage />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>
+      <Route path="/landing" element={<LandingPage />} />
     </Routes>
   );
 };
