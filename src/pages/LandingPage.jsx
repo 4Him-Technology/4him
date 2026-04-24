@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { Monitor, Briefcase, Users, Zap, Shield, BarChart3, Mail, Phone, MapPin, ChevronDown, ArrowRight, Star, CheckCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Monitor, Briefcase, Users, Zap, Shield, BarChart3, Mail, Phone, MapPin, ChevronDown, ArrowRight, Star, CheckCircle, LayoutDashboard } from "lucide-react";
 
 const LOGO_URL = "https://media.base44.com/images/public/69d05d38b40549791975d990/834173352_w2.png";
 
@@ -75,6 +76,7 @@ function AnimatedSection({ children, className = "" }) {
 }
 
 export default function LandingPage() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ name: "", email: "", phone: "", message: "" });
   const [sent, setSent] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -107,13 +109,22 @@ export default function LandingPage() {
             ))}
           </div>
 
-          <button
-            onClick={() => scrollTo("contato")}
-            className="hidden md:flex items-center gap-2 text-sm font-semibold px-5 py-2 rounded-full transition-all hover:scale-105"
-            style={{ background: "linear-gradient(135deg, #96682c, #c49a3c)", color: "#080808" }}
-          >
-            Fale Conosco <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+          <div className="hidden md:flex items-center gap-3">
+            <button
+              onClick={() => navigate("/")}
+              className="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full border transition-all hover:scale-105"
+              style={{ borderColor: "rgba(150,104,44,0.4)", color: "#c49a3c", backgroundColor: "transparent" }}
+            >
+              <LayoutDashboard className="w-3.5 h-3.5" /> Voltar ao Portal
+            </button>
+            <button
+              onClick={() => scrollTo("contato")}
+              className="flex items-center gap-2 text-sm font-semibold px-5 py-2 rounded-full transition-all hover:scale-105"
+              style={{ background: "linear-gradient(135deg, #96682c, #c49a3c)", color: "#080808" }}
+            >
+              Fale Conosco <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
 
           {/* Mobile menu toggle */}
           <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden p-2" style={{ color: "#c49a3c" }}>
