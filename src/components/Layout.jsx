@@ -2,7 +2,7 @@ import { Outlet, Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard, Calendar, MessageSquare, Users, Settings, UserCog,
   Menu, ChevronLeft, ChevronRight, BarChart2, Kanban, BotMessageSquare,
-  Scale, GanttChart, ChevronDown, Stethoscope, ScrollText, Plus, Search, FileSignature, PieChart, Gavel
+  Scale, GanttChart, ChevronDown, Stethoscope, ScrollText, Plus, Search, FileSignature, PieChart, Gavel, GitBranch
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -29,6 +29,7 @@ const lawNavItems = [
   { path: "/advocacia/pesquisa", label: "Pesquisar Processos", icon: Search },
   { path: "/advocacia/contratos", label: "Contratos", icon: FileSignature },
   { path: "/advocacia/pecas-processuais", label: "Peças Processuais", icon: Gavel },
+  { path: "/advocacia/linha-do-tempo", label: "Linha do Tempo", icon: GitBranch },
   { path: "/advocacia/relatorios", label: "Relatórios", icon: PieChart },
   { path: "/advocacia/financeiro", label: "Financeiro", icon: BarChart2 },
   { path: "/advocacia/assistente", label: "Fale com a Elo4h", icon: BotMessageSquare },

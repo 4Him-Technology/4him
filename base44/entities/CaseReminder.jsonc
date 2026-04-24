@@ -1,0 +1,62 @@
+{
+  "name": "CaseReminder",
+  "type": "object",
+  "properties": {
+    "case_id": {
+      "type": "string",
+      "title": "ID do Processo"
+    },
+    "case_ref": {
+      "type": "string",
+      "title": "Refer\u00eancia do Processo"
+    },
+    "client_name": {
+      "type": "string",
+      "title": "Cliente"
+    },
+    "title": {
+      "type": "string",
+      "title": "T\u00edtulo do Lembrete"
+    },
+    "reminder_date": {
+      "type": "string",
+      "format": "date",
+      "title": "Data do Lembrete"
+    },
+    "reminder_days_before": {
+      "type": "number",
+      "title": "Dias de Anteced\u00eancia"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "Audi\u00eancia",
+        "Prazo",
+        "Reuni\u00e3o",
+        "Dilig\u00eancia",
+        "Recurso",
+        "Outro"
+      ],
+      "title": "Tipo"
+    },
+    "notes": {
+      "type": "string",
+      "title": "Observa\u00e7\u00f5es"
+    },
+    "is_done": {
+      "type": "boolean",
+      "title": "Conclu\u00eddo",
+      "default": false
+    },
+    "email_sent": {
+      "type": "boolean",
+      "title": "E-mail Enviado",
+      "default": false
+    }
+  },
+  "required": [
+    "title",
+    "reminder_date",
+    "type"
+  ]
+}
