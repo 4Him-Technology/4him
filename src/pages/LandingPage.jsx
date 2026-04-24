@@ -154,11 +154,18 @@ export default function LandingPage() {
   const [tab, setTab] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [mouse, setMouse] = useState({ x: -9999, y: -9999 });
 
   useEffect(() => {
     const onScroll = () => setShowScrollTop(window.scrollY > 700);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const onMove = (e) => setMouse({ x: e.clientX, y: e.clientY });
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => window.removeEventListener("mousemove", onMove);
   }, []);
 
   // lock body scroll when mobile menu is open
@@ -186,6 +193,7 @@ export default function LandingPage() {
         @keyframes fadeIn4h    { from { opacity: 0; transform: translateY(12px) } to { opacity: 1; transform: translateY(0) } }
         @keyframes fadeInFast  { from { opacity: 0 } to { opacity: 1 } }
         @keyframes marquee4h   { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+        @keyframes floatBadge4h { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-9px) } }
         .font-serif4h { font-family: "Cormorant Garamond", "Playfair Display", Georgia, serif; }
         button, a[role="button"] { cursor: pointer; }
         button:focus-visible, a:focus-visible {
@@ -201,6 +209,16 @@ export default function LandingPage() {
           }
         }
       `}</style>
+
+      {/* ─── Mouse glow ─── */}
+      <div
+        aria-hidden
+        className="fixed inset-0 z-0 pointer-events-none"
+        style={{
+          background: `radial-gradient(700px circle at ${mouse.x}px ${mouse.y}px, rgba(196,154,60,0.07), transparent 55%)`,
+          transition: "background 80ms linear",
+        }}
+      />
 
       {/* ─── Animated grid background ─── */}
       <div
@@ -537,7 +555,7 @@ export default function LandingPage() {
             style={{ gap: "clamp(16px, 4vw, 56px)", marginTop: 8 }}
           >
             {/* Left badges */}
-            <div className="hidden md:flex flex-col gap-3 items-end">
+            <div className="hidden md:flex flex-col gap-7 items-end">
               {[
                 { text: "Atendimento 24h",      delay: 0   },
                 { text: "Follow-up automático", delay: 0.6 },
@@ -555,7 +573,7 @@ export default function LandingPage() {
                     color: "#f5f0e8",
                     backdropFilter: "blur(8px)",
                     boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
-                    animation: `floatH4h ${4 + i * 0.5}s ease-in-out infinite ${b.delay}s`,
+                    animation: `floatBadge4h ${4 + i * 0.5}s ease-in-out infinite ${b.delay}s`,
                   }}
                 >
                   <span style={{ color: "#c49a3c", fontSize: 8 }} aria-hidden>●</span>
@@ -593,7 +611,7 @@ export default function LandingPage() {
             </div>
 
             {/* Right badges */}
-            <div className="hidden md:flex flex-col gap-3 items-start">
+            <div className="hidden md:flex flex-col gap-7 items-start">
               {[
                 { text: "Multicanal",            delay: 1.0 },
                 { text: "Agenda integrada",      delay: 1.6 },
@@ -611,7 +629,7 @@ export default function LandingPage() {
                     color: "#f5f0e8",
                     backdropFilter: "blur(8px)",
                     boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
-                    animation: `floatH4h ${4.5 + i * 0.5}s ease-in-out infinite ${b.delay}s`,
+                    animation: `floatBadge4h ${4.5 + i * 0.5}s ease-in-out infinite ${b.delay}s`,
                   }}
                 >
                   <span style={{ color: "#c49a3c", fontSize: 8 }} aria-hidden>●</span>
