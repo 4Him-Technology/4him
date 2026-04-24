@@ -532,60 +532,93 @@ export default function LandingPage() {
 
         {/* Floating H monogram */}
         <Reveal delay={600}>
-          <div className="relative mx-auto w-fit" style={{ padding: 40 }}>
-            <div
-              aria-hidden
-              className="absolute inset-0 rounded-full"
-              style={{ border: "1px solid rgba(196,154,60,0.2)", animation: "spin4h 30s linear infinite" }}
-            />
-            <div
-              aria-hidden
-              className="absolute rounded-full"
-              style={{
-                inset: 20,
-                border: "1px dashed rgba(196,154,60,0.15)",
-                animation: "spin4h 20s linear infinite reverse",
-              }}
-            />
-            <div
-              className="flex items-center justify-center"
-              style={{
-                width: 320, height: 320,
-                animation: "floatH4h 6s ease-in-out infinite",
-                filter: "drop-shadow(0 40px 80px rgba(0,0,0,0.9)) drop-shadow(0 0 60px rgba(196,154,60,0.35))",
-              }}
-            >
-              <img src={LOGO_ICON_URL} alt="" className="w-full h-full object-contain" />
+          <div
+            className="mx-auto flex items-center justify-center"
+            style={{ gap: "clamp(16px, 4vw, 56px)", marginTop: 8 }}
+          >
+            {/* Left badges */}
+            <div className="hidden md:flex flex-col gap-3 items-end">
+              {[
+                { text: "Atendimento 24h",      delay: 0   },
+                { text: "Follow-up automático", delay: 0.6 },
+                { text: "Dashboard ao vivo",    delay: 1.2 },
+              ].map((b, i) => (
+                <div
+                  key={i}
+                  aria-hidden
+                  className="flex items-center gap-2 font-semibold rounded-full whitespace-nowrap"
+                  style={{
+                    background: "rgba(10,10,10,0.85)",
+                    border: "1px solid rgba(196,154,60,0.3)",
+                    padding: "9px 16px",
+                    fontSize: 12,
+                    color: "#f5f0e8",
+                    backdropFilter: "blur(8px)",
+                    boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
+                    animation: `floatH4h ${4 + i * 0.5}s ease-in-out infinite ${b.delay}s`,
+                  }}
+                >
+                  <span style={{ color: "#c49a3c", fontSize: 8 }} aria-hidden>●</span>
+                  {b.text}
+                </div>
+              ))}
             </div>
 
-            {[
-              { text: "Atendimento 24h",       x: -260, y: -90,  delay: 0   },
-              { text: "Follow-up automático",  x: -272, y:  50,  delay: 0.7 },
-              { text: "Dashboard ao vivo",     x: -258, y: 190,  delay: 1.5 },
-              { text: "Multicanal",            x:  202, y: -90,  delay: 1.2 },
-              { text: "Agenda integrada",      x:  202, y:  50,  delay: 2.0 },
-              { text: "Qualificação de leads", x:  198, y: 190,  delay: 2.5 },
-            ].map((b, i) => (
+            {/* Logo + rings */}
+            <div className="relative flex-shrink-0" style={{ padding: 40 }}>
               <div
-                key={i}
                 aria-hidden
-                className="absolute hidden md:flex items-center gap-2 font-semibold rounded-full whitespace-nowrap"
+                className="absolute inset-0 rounded-full"
+                style={{ border: "1px solid rgba(196,154,60,0.2)", animation: "spin4h 30s linear infinite" }}
+              />
+              <div
+                aria-hidden
+                className="absolute rounded-full"
                 style={{
-                  left: `calc(50% + ${b.x}px)`,
-                  top: `calc(50% + ${b.y}px)`,
-                  background: "rgba(10,10,10,0.85)",
-                  border: "1px solid rgba(196,154,60,0.3)",
-                  padding: "8px 14px",
-                  fontSize: 11,
-                  color: "#f5f0e8",
-                  backdropFilter: "blur(8px)",
-                  boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
-                  animation: `floatH4h 4s ease-in-out infinite ${b.delay}s`,
+                  inset: 20,
+                  border: "1px dashed rgba(196,154,60,0.15)",
+                  animation: "spin4h 20s linear infinite reverse",
+                }}
+              />
+              <div
+                className="flex items-center justify-center"
+                style={{
+                  width: 280, height: 280,
+                  animation: "floatH4h 6s ease-in-out infinite",
+                  filter: "drop-shadow(0 40px 80px rgba(0,0,0,0.9)) drop-shadow(0 0 60px rgba(196,154,60,0.35))",
                 }}
               >
-                <span style={{ color: "#c49a3c" }} aria-hidden>●</span> {b.text}
+                <img src={LOGO_ICON_URL} alt="" className="w-full h-full object-contain" />
               </div>
-            ))}
+            </div>
+
+            {/* Right badges */}
+            <div className="hidden md:flex flex-col gap-3 items-start">
+              {[
+                { text: "Multicanal",            delay: 1.0 },
+                { text: "Agenda integrada",      delay: 1.6 },
+                { text: "Qualificação de leads", delay: 2.2 },
+              ].map((b, i) => (
+                <div
+                  key={i}
+                  aria-hidden
+                  className="flex items-center gap-2 font-semibold rounded-full whitespace-nowrap"
+                  style={{
+                    background: "rgba(10,10,10,0.85)",
+                    border: "1px solid rgba(196,154,60,0.3)",
+                    padding: "9px 16px",
+                    fontSize: 12,
+                    color: "#f5f0e8",
+                    backdropFilter: "blur(8px)",
+                    boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
+                    animation: `floatH4h ${4.5 + i * 0.5}s ease-in-out infinite ${b.delay}s`,
+                  }}
+                >
+                  <span style={{ color: "#c49a3c", fontSize: 8 }} aria-hidden>●</span>
+                  {b.text}
+                </div>
+              ))}
+            </div>
           </div>
         </Reveal>
 
