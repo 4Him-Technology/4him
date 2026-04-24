@@ -7,9 +7,9 @@ import {
 } from "lucide-react";
 
 // H isolado (transparente) — nav, hero monograma
-const LOGO_ICON_URL = "https://raw.githubusercontent.com/APSIS-Filipe/4him/main/public/images/logo-icon.png";
+const LOGO_ICON_URL = "/images/logo-icon.png";
 // Horizontal completo (transparente) — footer, menu mobile
-const LOGO_FULL_URL = "https://raw.githubusercontent.com/APSIS-Filipe/4him/main/public/images/logo-full.png";
+const LOGO_FULL_URL = "/images/logo-full.png";
 
 const WHATSAPP_URL = "https://wa.me/5511999999999"; // substituir pelo número real
 
