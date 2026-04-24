@@ -170,7 +170,7 @@ export default function LandingPage() {
 
   return (
     <div
-      className="min-h-screen relative overflow-x-hidden font-inter"
+      className="min-h-screen relative overflow-hidden font-inter"
       style={{ backgroundColor: "#050505", color: "#f5f0e8" }}
     >
       {/* ─── Global styles ─── */}
@@ -248,7 +248,7 @@ export default function LandingPage() {
           {/* Menu header */}
           <div className="flex items-center justify-between" style={{ padding: "20px 24px" }}>
             <div className="flex items-center gap-3">
-              <img src={LOGO_URL} alt="4Him Technology" className="h-9 w-auto" width={36} height={36} />
+              <img src={LOGO_URL} alt="4Him Technology" className="h-9 w-auto" />
               <div>
                 <div className="font-bold text-sm" style={{ color: "#f5f0e8", letterSpacing: "-0.01em" }}>
                   4Him<span style={{ color: "#c49a3c" }}>.</span>
@@ -338,7 +338,7 @@ export default function LandingPage() {
       >
         {/* Logo */}
         <div className="flex items-center gap-3">
-          <img src={LOGO_URL} alt="4Him Technology" className="h-9 w-auto" width={36} height={36} />
+          <img src={LOGO_URL} alt="4Him Technology" className="h-9 w-auto" />
           <div className="hidden sm:block">
             <div className="text-sm font-bold" style={{ color: "#f5f0e8", letterSpacing: "-0.01em" }}>
               4Him<span style={{ color: "#c49a3c" }}>.</span>
@@ -396,7 +396,7 @@ export default function LandingPage() {
           </button>
           <button
             onClick={() => scrollTo("contato")}
-            className="hidden sm:flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold rounded-full transition-all duration-200 hover:scale-105"
+            className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold rounded-full transition-all duration-200 hover:scale-105"
             style={{
               background: "linear-gradient(135deg, #96682c, #e8c060)",
               color: "#050505",
@@ -551,7 +551,7 @@ export default function LandingPage() {
                 filter: "drop-shadow(0 40px 80px rgba(0,0,0,0.9)) drop-shadow(0 0 60px rgba(196,154,60,0.35))",
               }}
             >
-              <img src={LOGO_URL} alt="Logo 4Him Technology" className="w-full h-full object-contain" width={320} height={320} />
+              <img src={LOGO_URL} alt="" className="w-full h-full object-contain" />
             </div>
 
             {[
@@ -1210,7 +1210,7 @@ export default function LandingPage() {
           <div className="grid gap-12 md:grid-cols-[2fr_1fr_1fr_1fr]" style={{ marginBottom: 48 }}>
             <div>
               <div className="flex items-center gap-3" style={{ marginBottom: 16 }}>
-                <img src={LOGO_URL} alt="4Him Technology" className="h-10 w-auto" width={40} height={40} />
+                <img src={LOGO_URL} alt="" className="h-10 w-auto" />
                 <div>
                   <div className="font-bold" style={{ fontSize: 16, color: "#f5f0e8" }}>4Him Technology</div>
                   <div
