@@ -2,7 +2,7 @@ import { Outlet, Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard, Calendar, MessageSquare, Users, Settings, UserCog,
   Menu, ChevronLeft, ChevronRight, BarChart2, Kanban, BotMessageSquare,
-  Scale, GanttChart, ChevronDown, Stethoscope, ScrollText, Plus, Search, FileSignature, PieChart, Gavel, GitBranch
+  Scale, GanttChart, ChevronDown, Stethoscope, ScrollText, Plus, Search, FileSignature, PieChart, Gavel, GitBranch, Globe
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -223,11 +223,20 @@ export default function Layout() {
         </nav>
 
         {/* Footer */}
-        {!collapsed && (
-          <div className="relative z-10 px-4 py-4 border-t border-white/10">
-            <p className="text-[10px] text-white/30 text-center">4Him Technology v1.0</p>
-          </div>
-        )}
+        <div className="relative z-10 px-3 py-3 border-t border-white/10 space-y-2">
+          <a
+            href="/landing"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Ver Landing Page"
+            className={`flex items-center gap-3 rounded-lg text-xs font-semibold transition-all duration-200 px-3 py-2 border border-amber-600/30 hover:border-amber-500/60 hover:bg-amber-600/10 ${collapsed ? "justify-center" : ""}`}
+            style={{ color: "#c49a3c", backgroundColor: "rgba(150,104,44,0.08)" }}
+          >
+            <Globe className="w-4 h-4 shrink-0" />
+            {!collapsed && <span>Ver Site / Landing Page</span>}
+          </a>
+          {!collapsed && <p className="text-[10px] text-white/30 text-center">4Him Technology v1.0</p>}
+        </div>
       </aside>
 
       {/* Main content */}

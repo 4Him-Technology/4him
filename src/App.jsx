@@ -26,6 +26,7 @@ import LawContracts from './pages/law/LawContracts';
 import LawReports from './pages/law/LawReports';
 import LawDocumentTemplates from './pages/law/LawDocumentTemplates';
 import LawTimeline from './pages/law/LawTimeline';
+import LandingPage from './pages/LandingPage';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -75,6 +76,7 @@ const AuthenticatedApp = () => {
         <Route path="/advocacia/relatorios" element={<LawReports />} />
         <Route path="/advocacia/pecas-processuais" element={<LawDocumentTemplates />} />
         <Route path="/advocacia/linha-do-tempo" element={<LawTimeline />} />
+        <Route path="/landing" element={<LandingPage />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>
     </Routes>
