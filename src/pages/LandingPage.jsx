@@ -251,8 +251,16 @@ export default function LandingPage() {
         >
           {/* Menu header */}
           <div className="flex items-center justify-between" style={{ padding: "20px 24px" }}>
-            <div className="flex items-center">
-              <img src={LOGO_FULL_URL} alt="4Him Technology" className="h-10 w-auto" />
+            <div className="flex items-center gap-3">
+              <img src={LOGO_ICON_URL} alt="4Him Technology" className="h-9 w-auto" />
+              <div>
+                <div className="font-bold text-sm" style={{ color: "#f5f0e8", letterSpacing: "-0.01em" }}>
+                  4Him<span style={{ color: "#c49a3c" }}>.</span>
+                </div>
+                <div className="text-[8px] font-medium uppercase -mt-0.5" style={{ letterSpacing: "0.2em", color: "rgba(245,240,232,0.45)" }}>
+                  Technology
+                </div>
+              </div>
             </div>
             <button
               onClick={() => setMenuOpen(false)}
@@ -1205,13 +1213,13 @@ export default function LandingPage() {
         <div className="mx-auto" style={{ maxWidth: 1560 }}>
           <div className="grid gap-12 md:grid-cols-[2fr_1fr_1fr_1fr]" style={{ marginBottom: 48 }}>
             <div>
-              <div style={{ marginBottom: 16 }}>
-                <img src={LOGO_FULL_URL} alt="4Him Technology" className="h-12 w-auto" style={{ marginBottom: 4 }} />
-                <div
-                  className="uppercase"
-                  style={{ fontSize: 9, letterSpacing: "0.22em", color: "rgba(245,240,232,0.4)" }}
-                >
-                  Consultoria em IA
+              <div className="flex items-center gap-3" style={{ marginBottom: 16 }}>
+                <img src={LOGO_ICON_URL} alt="" className="h-10 w-auto" />
+                <div>
+                  <div className="font-bold" style={{ fontSize: 16, color: "#f5f0e8" }}>4Him Technology</div>
+                  <div className="uppercase" style={{ fontSize: 9, letterSpacing: "0.22em", color: "rgba(245,240,232,0.4)" }}>
+                    Consultoria em IA
+                  </div>
                 </div>
               </div>
               <p style={{ fontSize: 13, lineHeight: 1.7, color: "rgba(245,240,232,0.5)", maxWidth: 360 }}>
