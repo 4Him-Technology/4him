@@ -29,7 +29,6 @@ import LawTimeline from './pages/law/LawTimeline';
 import LandingPage from './pages/LandingPage';
 import LandingPage2 from './pages/LandingPage2';
 import LandingPage3 from './pages/LandingPage3';
-import LandingPage3 from './pages/LandingPage3';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
