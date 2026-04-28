@@ -27,6 +27,7 @@ import LawReports from './pages/law/LawReports';
 import LawDocumentTemplates from './pages/law/LawDocumentTemplates';
 import LawTimeline from './pages/law/LawTimeline';
 import LandingPage from './pages/LandingPage';
+import LandingPage2 from './pages/LandingPage2';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -79,6 +80,7 @@ const AuthenticatedApp = () => {
         <Route path="*" element={<PageNotFound />} />
       </Route>
       <Route path="/landing" element={<LandingPage />} />
+      <Route path="/landing2" element={<LandingPage2 />} />
     </Routes>
   );
 };
