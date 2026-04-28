@@ -83,7 +83,6 @@ const AuthenticatedApp = () => {
       <Route path="/landing" element={<LandingPage />} />
       <Route path="/landing2" element={<LandingPage2 />} />
       <Route path="/landing3" element={<LandingPage3 />} />
-      <Route path="/landing3" element={<LandingPage3 />} />
     </Routes>
   );
 };
