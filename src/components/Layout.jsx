@@ -242,6 +242,15 @@ export default function Layout() {
             <Globe className="w-4 h-4 shrink-0" />
             {!collapsed && <span>Landing Page 2</span>}
           </Link>
+          <Link
+            to="/landing3"
+            title="Ver Landing Page 3"
+            className={`flex items-center gap-3 rounded-lg text-xs font-semibold transition-all duration-200 px-3 py-2 border border-amber-600/30 hover:border-amber-500/60 hover:bg-amber-600/10 ${collapsed ? "justify-center" : ""}`}
+            style={{ color: "#c49a3c", backgroundColor: "rgba(150,104,44,0.08)" }}
+          >
+            <Globe className="w-4 h-4 shrink-0" />
+            {!collapsed && <span>Landing Page 3</span>}
+          </Link>
           {!collapsed && <p className="text-[10px] text-white/30 text-center">4Him Technology v1.0</p>}
         </div>
       </aside>
