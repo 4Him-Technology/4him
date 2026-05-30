@@ -1,39 +1,81 @@
-**Welcome to your Base44 project** 
+# 4Him
 
-**About**
+Aplicação web (React + Vite) com dois módulos — **Clínica Médica** e **Advocacia** — incluindo
+dashboards, agendamentos, financeiro, gestão de clientes/pacientes, processos, peças jurídicas,
+integração de WhatsApp/Leads e assistente de IA.
 
-View and Edit  your app on [Base44.com](http://Base44.com) 
+> **Independente do Base44.** Este projeto **não** depende mais da plataforma Base44 (nem do SDK,
+> nem do plugin de build, nem do login/hospedagem do Base44). Você commita, roda e publica por
+> conta própria. Veja [Modo de dados local](#modo-de-dados-local) abaixo.
 
-This project contains everything you need to run your app locally.
+## Stack
 
-**Edit the code in your local development environment**
+- **React 18** + **Vite 6**
+- **React Router** (navegação)
+- **Tailwind CSS** + **shadcn/ui** (Radix UI)
+- **TanStack Query** (estado assíncrono)
+- **Recharts** (gráficos), **Leaflet**, **jsPDF**, **react-quill**, entre outros
 
-Any change pushed to the repo will also be reflected in the Base44 Builder.
+## Como rodar
 
-**Prerequisites:** 
+**Pré-requisitos:** Node.js 18+ (recomendado 20+).
 
-1. Clone the repository using the project's Git URL 
-2. Navigate to the project directory
-3. Install dependencies: `npm install`
-4. Create an `.env.local` file and set the right environment variables
+```bash
+npm install      # instala as dependências
+npm run dev      # ambiente de desenvolvimento (http://localhost:5173)
+npm run build    # build de produção (pasta dist/)
+npm run preview  # serve o build de produção localmente
+npm run lint     # checagem de lint
+```
+
+Não há variáveis de ambiente obrigatórias. O app abre direto, já autenticado com um usuário
+local de exemplo.
+
+## Modo de dados local
+
+No lugar do backend do Base44, o app usa uma **camada de dados local**:
+
+| Arquivo | Responsabilidade |
+|---|---|
+| `src/api/seedData.js` | **Os dados das entidades, escritos direto no código** (pacientes, agendamentos, clientes, processos, financeiro, etc.). |
+| `src/api/localDb.js` | Camada genérica que emula a API de entidades (`list`/`filter`/`get`/`create`/`update`/`delete`/`subscribe`) sobre o `localStorage`. |
+| `src/api/localAgents.js` | Assistente de IA local (mantém conversas; resposta é um stub, pois a IA real exige um provedor externo). |
+| `src/api/base44Client.js` | Monta o objeto `base44` (entities/auth/integrations/functions/agents) a partir das peças acima. **Mantém a mesma interface** usada em todo o app. |
+| `src/lib/AuthContext.jsx` | Autenticação local (sempre autenticado; sem rede e sem redirecionar para login externo). |
+
+**Persistência:** na primeira execução, os dados de `seedData.js` são carregados; as alterações
+feitas no app ficam salvas no `localStorage` do navegador (chaves com prefixo `4him_db_`).
+Para restaurar os dados originais, limpe o `localStorage` do site.
+
+### O que está em modo stub (precisa de backend para funcionar de verdade)
+
+Estes recursos dependem de serviços externos e hoje retornam respostas seguras (não quebram a UI),
+mas **não** executam de verdade no modo local:
+
+- **IA** (`InvokeLLM` e os assistentes Elo4h/Lex) — conecte um provedor (ex.: Claude API).
+- **WhatsApp / Leads** (`functions.invoke("chatwoot", …)`) — integração Chatwoot externa.
+- **Envio de e-mail** (`SendEmail`).
+
+## Plugando um banco/serviço real depois
+
+A aplicação inteira consome `base44.entities.X` com um contrato simples, então basta trocar a
+implementação **sem mexer nos componentes**:
+
+1. **Dados:** reimplemente `createCollection` em `src/api/localDb.js` (ou substitua `base44Client.js`)
+   apontando para a sua API — Supabase, REST, etc. Os esquemas das entidades estão documentados em
+   `base44/entities/*.jsonc` e refletidos em `src/api/seedData.js`.
+2. **Login:** reimplemente `checkUserAuth`, `logout` e `navigateToLogin` em `src/lib/AuthContext.jsx`.
+3. **IA / integrações:** implemente as chamadas reais em `src/api/base44Client.js` e
+   `src/api/localAgents.js`.
+
+## Estrutura
 
 ```
-VITE_BASE44_APP_ID=your_app_id
-VITE_BASE44_APP_BASE_URL=your_backend_url
-
-e.g.
-VITE_BASE44_APP_ID=cbef744a8545c389ef439ea6
-VITE_BASE44_APP_BASE_URL=https://my-to-do-list-81bfaad7.base44.app
+src/
+  api/         # camada de dados local (substitui o backend)
+  components/  # componentes (incl. ui/ do shadcn) e modais por módulo
+  lib/         # AuthContext, utils, templates, query-client
+  pages/       # telas da clínica e de advocacia (pages/law/*)
+public/images/ # logos servidos localmente
+base44/        # esquemas de entidades/funções/agentes (referência — não é usado em runtime)
 ```
-
-Run the app: `npm run dev`
-
-**Publish your changes**
-
-Open [Base44.com](http://Base44.com) and click on Publish.
-
-**Docs & Support**
-
-Documentation: [https://docs.base44.com/Integrations/Using-GitHub](https://docs.base44.com/Integrations/Using-GitHub)
-
-Support: [https://app.base44.com/support](https://app.base44.com/support)

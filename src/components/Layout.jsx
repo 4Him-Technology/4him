@@ -7,8 +7,9 @@ import {
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-const LOGO_URL = "https://media.base44.com/images/public/69d05d38b40549791975d990/834173352_w2.png";
-const LOGO_MINI = "https://media.base44.com/images/public/69d05d38b40549791975d990/42c26ab70_poih.png";
+// Logos servidos localmente a partir de public/images (sem depender do CDN do Base44).
+const LOGO_URL = "/images/logo-full-white.png";
+const LOGO_MINI = "/images/logo-icon.png";
 
 const clinicNavItems = [
   { path: "/", label: "Dashboard", icon: LayoutDashboard },
