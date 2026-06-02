@@ -1,9 +1,9 @@
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 
-// Autenticação LOCAL (sem Base44).
-// O usuário da sessão vem de `base44.auth.me()` (definido em seedData.js). Não há chamadas de
-// rede nem redirecionamento para o login do Base44 — o app abre direto, já autenticado.
+// Autenticação LOCAL.
+// O usuário da sessão vem de `api.auth.me()` (definido em seedData.js). Não há chamadas de
+// rede nem redirecionamento para login externo — o app abre direto, já autenticado.
 // Quando plugar um login real, reimplemente `checkUserAuth`, `logout` e `navigateToLogin`.
 
 const AuthContext = createContext();
@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
   const checkUserAuth = useCallback(async () => {
     setIsLoadingAuth(true);
     try {
-      const currentUser = await base44.auth.me();
+      const currentUser = await api.auth.me();
       setUser(currentUser);
       setIsAuthenticated(true);
       setAuthError(null);
@@ -46,13 +46,13 @@ export const AuthProvider = ({ children }) => {
   }, [checkAppState]);
 
   const logout = useCallback((shouldRedirect = true) => {
-    base44.auth.logout(shouldRedirect ? window.location.href : undefined);
+    api.auth.logout(shouldRedirect ? window.location.href : undefined);
     setUser(null);
     setIsAuthenticated(false);
   }, []);
 
   const navigateToLogin = useCallback(() => {
-    base44.auth.redirectToLogin(window.location.href);
+    api.auth.redirectToLogin(window.location.href);
   }, []);
 
   return (

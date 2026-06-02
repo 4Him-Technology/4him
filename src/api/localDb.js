@@ -1,13 +1,13 @@
-// Camada de dados LOCAL (sem Base44).
+// Camada de dados LOCAL.
 //
-// Emula a API de entidades do SDK do Base44 (list/filter/get/create/update/delete/subscribe)
+// Emula uma API de entidades (list/filter/get/create/update/delete/subscribe)
 // usando os dados que vivem em `seedData.js` e persistindo as alterações no localStorage do
-// navegador. Assim o app roda 100% offline, sem nenhuma chamada ao Base44.
+// navegador. Assim o app roda 100% offline, sem nenhuma chamada de rede.
 //
 // COMO PLUGAR UM BANCO REAL DEPOIS:
 //   Basta reimplementar `createCollection` (ou os métodos abaixo) apontando para a sua API
 //   (Supabase, REST, etc.). Nenhum componente da aplicação precisa ser alterado, porque todos
-//   consomem `base44.entities.X` com este mesmo contrato.
+//   consomem `api.entities.X` com este mesmo contrato.
 
 const STORAGE_PREFIX = '4him_db_';
 const hasWindow = typeof window !== 'undefined';
@@ -59,7 +59,7 @@ function compareBy(a, b, field) {
   return 0;
 }
 
-// Aceita o mesmo formato de ordenação do Base44: "campo" (asc) ou "-campo" (desc).
+// Formato de ordenação aceito: "campo" (asc) ou "-campo" (desc).
 function applySort(rows, sort) {
   if (!sort) return [...rows];
   const desc = sort.startsWith('-');
@@ -152,7 +152,7 @@ export function createCollection(name, seed = []) {
       return removed;
     },
 
-    // Emula o real-time do Base44: retorna uma função para cancelar a inscrição.
+    // Real-time simples: retorna uma função para cancelar a inscrição.
     subscribe(callback) {
       subscribers.add(callback);
       return () => subscribers.delete(callback);

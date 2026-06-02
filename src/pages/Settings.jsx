@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,7 +28,7 @@ export default function Settings() {
 
   useEffect(() => {
     async function load() {
-      const list = await base44.entities.ClinicSettings.list("-created_date", 1);
+      const list = await api.entities.ClinicSettings.list("-created_date", 1);
       if (list.length > 0) {
         setSettings(list[0]);
         setForm({
@@ -50,9 +50,9 @@ export default function Settings() {
   const handleSave = async () => {
     setSaving(true);
     if (settings) {
-      await base44.entities.ClinicSettings.update(settings.id, form);
+      await api.entities.ClinicSettings.update(settings.id, form);
     } else {
-      const created = await base44.entities.ClinicSettings.create(form);
+      const created = await api.entities.ClinicSettings.create(form);
       setSettings(created);
     }
     setSaving(false);

@@ -1,9 +1,7 @@
-// Cliente "base44" — implementação LOCAL (sem Base44).
+// Cliente local de dados/serviços do app.
 //
-// Mantém EXATAMENTE a mesma interface que o SDK do Base44 expunha
-// (base44.entities / auth / integrations / functions / agents), de modo que nenhum dos
-// componentes que importam `{ base44 }` precise ser alterado. A diferença é que tudo roda
-// localmente: os dados vêm de `seedData.js` e são persistidos no localStorage.
+// Expõe `api.entities / auth / integrations / functions / agents`. Tudo roda localmente:
+// os dados vêm de `seedData.js` e são persistidos no localStorage do navegador.
 //
 // >>> PARA PLUGAR UM BANCO/SERVIÇO REAL DEPOIS <<<
 //   - Dados (entidades): troque a fábrica em `localDb.js`.
@@ -21,15 +19,10 @@ const entities = {
   FinancialRecord: createCollection('FinancialRecord', seed.FinancialRecord),
   ClinicSettings: createCollection('ClinicSettings', seed.ClinicSettings),
   WhatsAppMessage: createCollection('WhatsAppMessage', seed.WhatsAppMessage),
-  LegalClient: createCollection('LegalClient', seed.LegalClient),
-  LegalCase: createCollection('LegalCase', seed.LegalCase),
-  LegalDocument: createCollection('LegalDocument', seed.LegalDocument),
-  LegalFinancial: createCollection('LegalFinancial', seed.LegalFinancial),
-  CaseReminder: createCollection('CaseReminder', seed.CaseReminder),
   User: createCollection('User', seed.User),
 };
 
-// ---- Autenticação (sessão local — sem redirecionar para o Base44) ----
+// ---- Autenticação (sessão local) ----
 const sessionUser = { ...seed.User[0] };
 
 const auth = {
@@ -40,10 +33,10 @@ const auth = {
     return sessionUser;
   },
   async logout() {
-    console.info('[base44 local] logout() — sem ação no modo local.');
+    console.info('[local] logout() — sem ação no modo local.');
   },
   async redirectToLogin() {
-    console.info('[base44 local] redirectToLogin() — sem ação no modo local.');
+    console.info('[local] redirectToLogin() — sem ação no modo local.');
   },
   async updateMyUserData(data = {}) {
     Object.assign(sessionUser, data);
@@ -53,7 +46,7 @@ const auth = {
 
 // ---- Integrações (IA / arquivos) ----
 const AI_NOTICE =
-  'IA desconectada (modo local). Configure um provedor de IA em src/api/base44Client.js.';
+  'IA desconectada (modo local). Configure um provedor de IA em src/api/client.js.';
 
 // Gera um objeto padrão a partir de um JSON Schema (usado quando o app pede resposta estruturada).
 function defaultFromSchema(schema) {
@@ -97,7 +90,7 @@ const integrations = {
       return { file_url };
     },
     async SendEmail() {
-      console.info('[base44 local] SendEmail() — e-mail não enviado no modo local.');
+      console.info('[local] SendEmail() — e-mail não enviado no modo local.');
       return { success: true, local: true };
     },
     async GenerateImage() {
@@ -118,7 +111,7 @@ const functions = {
   },
 };
 
-export const base44 = {
+export const api = {
   entities,
   auth,
   integrations,
@@ -126,4 +119,4 @@ export const base44 = {
   agents: localAgents,
 };
 
-export default base44;
+export default api;

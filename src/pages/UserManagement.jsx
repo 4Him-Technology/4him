@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,7 +18,7 @@ export default function UserManagement() {
   const [inviting, setInviting] = useState(false);
 
   const load = async () => {
-    const list = await base44.entities.User.list("-created_date", 100);
+    const list = await api.entities.User.list("-created_date", 100);
     setUsers(list);
     setLoading(false);
   };
@@ -28,7 +28,7 @@ export default function UserManagement() {
   const handleInvite = async () => {
     if (!inviteEmail) return;
     setInviting(true);
-    await base44.users.inviteUser(inviteEmail, inviteRole);
+    await api.users.inviteUser(inviteEmail, inviteRole);
     setInviting(false);
     setInviteOpen(false);
     setInviteEmail("");
@@ -37,7 +37,7 @@ export default function UserManagement() {
   };
 
   const handleRoleChange = async (userId, newRole) => {
-    await base44.entities.User.update(userId, { role: newRole });
+    await api.entities.User.update(userId, { role: newRole });
     load();
     toast.success("Papel atualizado!");
   };

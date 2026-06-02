@@ -15,17 +15,6 @@ import UserManagement from './pages/UserManagement';
 import FinancialAnalysis from './pages/FinancialAnalysis';
 import Leads from './pages/Leads';
 import AIAssistant from './pages/AIAssistant';
-import LawDashboard from './pages/law/LawDashboard';
-import LawClients from './pages/law/LawClients';
-import LawCases from './pages/law/LawCases';
-import LawFinancial from './pages/law/LawFinancial';
-import LawAssistant from './pages/law/LawAssistant';
-import LawDocuments from './pages/law/LawDocuments';
-import LawSearch from './pages/law/LawSearch';
-import LawContracts from './pages/law/LawContracts';
-import LawReports from './pages/law/LawReports';
-import LawDocumentTemplates from './pages/law/LawDocumentTemplates';
-import LawTimeline from './pages/law/LawTimeline';
 import LandingPage from './pages/LandingPage';
 import LandingPage2 from './pages/LandingPage2';
 import LandingPage3 from './pages/LandingPage3';
@@ -66,18 +55,6 @@ const AuthenticatedApp = () => {
         <Route path="/financeiro" element={<FinancialAnalysis />} />
         <Route path="/leads" element={<Leads />} />
         <Route path="/assistente" element={<AIAssistant />} />
-        {/* Módulo Advocacia */}
-        <Route path="/advocacia/dashboard" element={<LawDashboard />} />
-        <Route path="/advocacia/clientes" element={<LawClients />} />
-        <Route path="/advocacia/processos" element={<LawCases />} />
-        <Route path="/advocacia/financeiro" element={<LawFinancial />} />
-        <Route path="/advocacia/assistente" element={<LawAssistant />} />
-        <Route path="/advocacia/pecas" element={<LawDocuments />} />
-        <Route path="/advocacia/pesquisa" element={<LawSearch />} />
-        <Route path="/advocacia/contratos" element={<LawContracts />} />
-        <Route path="/advocacia/relatorios" element={<LawReports />} />
-        <Route path="/advocacia/pecas-processuais" element={<LawDocumentTemplates />} />
-        <Route path="/advocacia/linha-do-tempo" element={<LawTimeline />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>
       <Route path="/landing" element={<LandingPage />} />

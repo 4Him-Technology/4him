@@ -2,12 +2,12 @@ import { Outlet, Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard, Calendar, MessageSquare, Users, Settings, UserCog,
   Menu, ChevronLeft, ChevronRight, BarChart2, Kanban, BotMessageSquare,
-  Scale, GanttChart, ChevronDown, Stethoscope, ScrollText, Plus, Search, FileSignature, PieChart, Gavel, GitBranch, Globe
+  ChevronDown, Stethoscope, Globe
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-// Logos servidos localmente a partir de public/images (sem depender do CDN do Base44).
+// Logos servidos localmente a partir de public/images.
 const LOGO_URL = "/images/logo-full-white.png";
 const LOGO_MINI = "/images/logo-icon.png";
 
@@ -23,67 +23,12 @@ const clinicNavItems = [
   { path: "/assistente", label: "Fale com a Elo4h", icon: BotMessageSquare },
 ];
 
-const lawNavItems = [
-  { path: "/advocacia/dashboard", label: "Dashboard Jurídico", icon: LayoutDashboard },
-  { path: "/advocacia/clientes", label: "Clientes", icon: Users },
-  { path: "/advocacia/processos", label: "Processos & Agenda", icon: GanttChart },
-  { path: "/advocacia/pesquisa", label: "Pesquisar Processos", icon: Search },
-  { path: "/advocacia/contratos", label: "Contratos", icon: FileSignature },
-  { path: "/advocacia/pecas-processuais", label: "Peças Processuais", icon: Gavel },
-  { path: "/advocacia/linha-do-tempo", label: "Linha do Tempo", icon: GitBranch },
-  { path: "/advocacia/relatorios", label: "Relatórios", icon: PieChart },
-  { path: "/advocacia/financeiro", label: "Financeiro", icon: BarChart2 },
-  { path: "/advocacia/assistente", label: "Fale com a Elo4h", icon: BotMessageSquare },
+// Landing pages disponíveis (abertas pelo botão "LP" no rodapé da sidebar).
+const landingPages = [
+  { path: "/landing", label: "Landing Page 1" },
+  { path: "/landing2", label: "Landing Page 2" },
+  { path: "/landing3", label: "Landing Page 3" },
 ];
-
-const pecasSubItems = [
-  { path: "/advocacia/pecas?tab=nova", label: "Nova Peça", icon: Plus },
-  { path: "/advocacia/pecas?tab=criadas", label: "Peças Criadas", icon: ScrollText },
-];
-
-function PecasSubGroup({ location, onLinkClick, collapsed }) {
-  const isActive = location.pathname === "/advocacia/pecas";
-  const [open, setOpen] = useState(isActive);
-
-  return (
-    <div>
-      <button
-        onClick={() => setOpen(o => !o)}
-        title={collapsed ? "Peças Jurídicas" : undefined}
-        className={cn(
-          "w-full flex items-center gap-3 rounded-lg text-sm font-medium transition-all duration-200 px-3 py-2.5",
-          collapsed ? "justify-center" : "pl-3 justify-between"
-        )}
-        style={{
-          color: isActive ? '#96682c' : 'rgba(255,255,255,0.65)',
-          backgroundColor: isActive ? 'rgba(150,104,44,0.15)' : 'transparent',
-          border: isActive ? '1px solid rgba(150,104,44,0.3)' : '1px solid transparent',
-        }}
-      >
-        <div className="flex items-center gap-3">
-          <ScrollText className="w-4 h-4 shrink-0" />
-          {!collapsed && <span>Peças Jurídicas</span>}
-        </div>
-        {!collapsed && (
-          <ChevronDown className={cn("w-3.5 h-3.5 transition-transform duration-200", open ? "rotate-180" : "")} />
-        )}
-      </button>
-      {open && (
-        <div className="mt-0.5 space-y-0.5 pl-3">
-          {pecasSubItems.map(item => (
-            <NavLink
-              key={item.path}
-              item={item}
-              isActive={location.pathname === "/advocacia/pecas"}
-              onClick={onLinkClick}
-              collapsed={collapsed}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
 
 function NavLink({ item, isActive, onClick, collapsed }) {
   const [hovered, setHovered] = useState(false);
@@ -156,6 +101,7 @@ export default function Layout() {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const [lpOpen, setLpOpen] = useState(false);
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
@@ -203,55 +149,45 @@ export default function Layout() {
             onLinkClick={() => setMobileOpen(false)}
             collapsed={collapsed}
           />
-          <div className="py-1">
-            <div className="border-t border-white/10" />
-          </div>
-          <NavGroup
-            label="Advocacia"
-            icon={Scale}
-            items={lawNavItems}
-            location={location}
-            onLinkClick={() => setMobileOpen(false)}
-            collapsed={collapsed}
-            extraContent={
-              <PecasSubGroup
-                location={location}
-                onLinkClick={() => setMobileOpen(false)}
-                collapsed={collapsed}
-              />
-            }
-          />
         </nav>
 
         {/* Footer */}
         <div className="relative z-10 px-3 py-3 border-t border-white/10 space-y-2">
-          <Link
-            to="/landing"
-            title="Ver Landing Page 1"
-            className={`flex items-center gap-3 rounded-lg text-xs font-semibold transition-all duration-200 px-3 py-2 border border-amber-600/30 hover:border-amber-500/60 hover:bg-amber-600/10 ${collapsed ? "justify-center" : ""}`}
+          {/* Opções de Landing Page — expandem acima do botão "LP" */}
+          {lpOpen && (
+            <div className="space-y-1">
+              {landingPages.map(lp => (
+                <Link
+                  key={lp.path}
+                  to={lp.path}
+                  title={lp.label}
+                  onClick={() => setMobileOpen(false)}
+                  className={`flex items-center gap-3 rounded-lg text-xs font-medium transition-all duration-200 px-3 py-2 border border-amber-600/30 hover:border-amber-500/60 hover:bg-amber-600/10 ${collapsed ? "justify-center" : "pl-5"}`}
+                  style={{ color: "#c49a3c", backgroundColor: "rgba(150,104,44,0.08)" }}
+                >
+                  <Globe className="w-4 h-4 shrink-0" />
+                  {!collapsed && <span>{lp.label}</span>}
+                </Link>
+              ))}
+            </div>
+          )}
+
+          {/* Botão "LP" — abre/fecha as opções de landing page */}
+          <button
+            onClick={() => setLpOpen(o => !o)}
+            title={collapsed ? "Landing Pages (LP)" : undefined}
+            className={`w-full flex items-center gap-3 rounded-lg text-xs font-semibold transition-all duration-200 px-3 py-2 border border-amber-600/30 hover:border-amber-500/60 hover:bg-amber-600/10 ${collapsed ? "justify-center" : "justify-between"}`}
             style={{ color: "#c49a3c", backgroundColor: "rgba(150,104,44,0.08)" }}
           >
-            <Globe className="w-4 h-4 shrink-0" />
-            {!collapsed && <span>Landing Page 1</span>}
-          </Link>
-          <Link
-            to="/landing2"
-            title="Ver Landing Page 2"
-            className={`flex items-center gap-3 rounded-lg text-xs font-semibold transition-all duration-200 px-3 py-2 border border-amber-600/30 hover:border-amber-500/60 hover:bg-amber-600/10 ${collapsed ? "justify-center" : ""}`}
-            style={{ color: "#c49a3c", backgroundColor: "rgba(150,104,44,0.08)" }}
-          >
-            <Globe className="w-4 h-4 shrink-0" />
-            {!collapsed && <span>Landing Page 2</span>}
-          </Link>
-          <Link
-            to="/landing3"
-            title="Ver Landing Page 3"
-            className={`flex items-center gap-3 rounded-lg text-xs font-semibold transition-all duration-200 px-3 py-2 border border-amber-600/30 hover:border-amber-500/60 hover:bg-amber-600/10 ${collapsed ? "justify-center" : ""}`}
-            style={{ color: "#c49a3c", backgroundColor: "rgba(150,104,44,0.08)" }}
-          >
-            <Globe className="w-4 h-4 shrink-0" />
-            {!collapsed && <span>Landing Page 3</span>}
-          </Link>
+            <div className="flex items-center gap-3">
+              <Globe className="w-4 h-4 shrink-0" />
+              {!collapsed && <span>LP</span>}
+            </div>
+            {!collapsed && (
+              <ChevronDown className={cn("w-3.5 h-3.5 transition-transform duration-200", lpOpen ? "rotate-180" : "")} />
+            )}
+          </button>
+
           {!collapsed && <p className="text-[10px] text-white/30 text-center">4Him Technology v1.0</p>}
         </div>
       </aside>

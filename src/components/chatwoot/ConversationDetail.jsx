@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -33,7 +33,7 @@ export default function ConversationDetail({ conv, onClose, onStatusChange }) {
 
   async function loadMessages() {
     setLoading(true);
-    const res = await base44.functions.invoke("chatwoot", {
+    const res = await api.functions.invoke("chatwoot", {
       action: "getMessages",
       account_id: ACCOUNT_ID,
       conversation_id: conv.id,
@@ -45,7 +45,7 @@ export default function ConversationDetail({ conv, onClose, onStatusChange }) {
   async function sendMessage() {
     if (!text.trim()) return;
     setSending(true);
-    await base44.functions.invoke("chatwoot", {
+    await api.functions.invoke("chatwoot", {
       action: "sendMessage",
       account_id: ACCOUNT_ID,
       conversation_id: conv.id,
@@ -59,7 +59,7 @@ export default function ConversationDetail({ conv, onClose, onStatusChange }) {
   async function changeStatus() {
     const action = STATUS_ACTIONS[conv.status];
     if (!action) return;
-    await base44.functions.invoke("chatwoot", {
+    await api.functions.invoke("chatwoot", {
       action: "toggleStatus",
       account_id: ACCOUNT_ID,
       conversation_id: conv.id,

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/client";
 import ConversationSidebar from "@/components/assistant/ConversationSidebar";
 import ChatArea from "@/components/assistant/ChatArea";
 
@@ -20,7 +20,7 @@ export default function AIAssistant() {
   async function loadConversationList() {
     setLoadingList(true);
     try {
-      const list = await base44.agents.listConversations({ agent_name: "elo4h" });
+      const list = await api.agents.listConversations({ agent_name: "elo4h" });
       setConversations(list || []);
     } catch (e) {
       setConversations([]);
@@ -33,7 +33,7 @@ export default function AIAssistant() {
     setMessages([]);
     setActiveConversation(null);
     try {
-      const conv = await base44.agents.createConversation({
+      const conv = await api.agents.createConversation({
         agent_name: "elo4h",
         metadata: { name: "Nova conversa" },
       });
@@ -41,7 +41,7 @@ export default function AIAssistant() {
       setMessages(conv.messages || []);
       setConversations((prev) => [conv, ...prev]);
 
-      base44.agents.subscribeToConversation(conv.id, (data) => {
+      api.agents.subscribeToConversation(conv.id, (data) => {
         setMessages(data.messages || []);
       });
     } catch (e) {
@@ -55,10 +55,10 @@ export default function AIAssistant() {
     setMessages([]);
     setActiveConversation(conv);
     try {
-      const fullConv = await base44.agents.getConversation(conv.id);
+      const fullConv = await api.agents.getConversation(conv.id);
       setMessages(fullConv.messages || []);
 
-      base44.agents.subscribeToConversation(conv.id, (data) => {
+      api.agents.subscribeToConversation(conv.id, (data) => {
         setMessages(data.messages || []);
       });
     } catch (e) {
@@ -69,7 +69,7 @@ export default function AIAssistant() {
 
   async function handleDeleteConversation(convId) {
     try {
-      await base44.agents.deleteConversation(convId);
+      await api.agents.deleteConversation(convId);
       setConversations((prev) => prev.filter((c) => c.id !== convId));
       if (activeConversation?.id === convId) {
         setActiveConversation(null);
@@ -89,13 +89,13 @@ export default function AIAssistant() {
     if (!conv) {
       setStarting(true);
       try {
-        conv = await base44.agents.createConversation({
+        conv = await api.agents.createConversation({
           agent_name: "elo4h",
           metadata: { name: text.slice(0, 40) },
         });
         setActiveConversation(conv);
         setConversations((prev) => [conv, ...prev]);
-        base44.agents.subscribeToConversation(conv.id, (data) => {
+        api.agents.subscribeToConversation(conv.id, (data) => {
           setMessages(data.messages || []);
         });
       } catch (e) {
@@ -108,7 +108,7 @@ export default function AIAssistant() {
     setInput("");
     setLoading(true);
     try {
-      await base44.agents.addMessage(conv, { role: "user", content: text });
+      await api.agents.addMessage(conv, { role: "user", content: text });
     } catch (e) {
       console.error(e);
     }

@@ -10,8 +10,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      // O alias "@" -> "src" era fornecido pelo plugin do Base44 (removido).
-      // Agora é declarado aqui explicitamente.
+      // Alias "@" -> "src", declarado explicitamente.
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },

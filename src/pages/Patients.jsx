@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Search, Trash2, Edit2, Phone, Mail, Calendar, CheckCircle } from "lucide-react";
@@ -25,8 +25,8 @@ export default function Patients() {
 
   const load = async () => {
     const [pts, apts] = await Promise.all([
-      base44.entities.Patient.list("-created_date", 500),
-      base44.entities.Appointment.list("-date", 500),
+      api.entities.Patient.list("-created_date", 500),
+      api.entities.Appointment.list("-date", 500),
     ]);
     setPatients(pts);
     setAppointments(apts);
@@ -34,7 +34,7 @@ export default function Patients() {
   };
 
   const handleDelete = async (id) => {
-    await base44.entities.Patient.delete(id);
+    await api.entities.Patient.delete(id);
     load();
   };
 

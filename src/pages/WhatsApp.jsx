@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/client";
 import { Loader2, RefreshCw, Wifi } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ConversationList from "@/components/whatsapp/ConversationList";
@@ -22,7 +22,7 @@ export default function WhatsApp() {
     pollRef.current = setInterval(loadConversations, POLL_INTERVAL);
 
     // Real-time: subscribe to WhatsAppMessage entity changes triggered by webhook
-    const unsubscribe = base44.entities.WhatsAppMessage.subscribe((event) => {
+    const unsubscribe = api.entities.WhatsAppMessage.subscribe((event) => {
       // When webhook fires a new message/conversation event, refresh the list
       loadConversations();
     });
@@ -35,7 +35,7 @@ export default function WhatsApp() {
 
   async function loadConversations(showLoading = false) {
     if (showLoading) setLoading(true);
-    const res = await base44.functions.invoke("chatwoot", {
+    const res = await api.functions.invoke("chatwoot", {
       action: "getConversations",
       account_id: ACCOUNT_ID,
       page: 1,

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, Bot } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/client";
 import moment from "moment";
 
 export default function ChatView({ messages, contactName, contactPhone, whatsappLine, onMessageSent }) {
@@ -13,7 +13,7 @@ export default function ChatView({ messages, contactName, contactPhone, whatsapp
   const handleSend = async () => {
     if (!text.trim()) return;
     setSending(true);
-    await base44.entities.WhatsAppMessage.create({
+    await api.entities.WhatsAppMessage.create({
       contact_name: contactName,
       contact_phone: contactPhone,
       message: text,

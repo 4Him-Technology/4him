@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/client";
 import { TrendingUp, TrendingDown, DollarSign, PiggyBank, Plus, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -35,7 +35,7 @@ export default function FinancialAnalysis() {
   const [editing, setEditing] = useState(null);
 
   const load = async () => {
-    const data = await base44.entities.FinancialRecord.list("-date", 500);
+    const data = await api.entities.FinancialRecord.list("-date", 500);
     setRecords(data);
     setLoading(false);
   };
@@ -80,7 +80,7 @@ export default function FinancialAnalysis() {
   const pieData = Object.entries(categoryMap).map(([name, value]) => ({ name, value }));
 
   const handleDelete = async (id) => {
-    await base44.entities.FinancialRecord.delete(id);
+    await api.entities.FinancialRecord.delete(id);
     load();
   };
 

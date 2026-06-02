@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/client";
 import { cn } from "@/lib/utils";
 import { RefreshCw, Loader2, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -35,9 +35,9 @@ export default function Leads() {
     setLoading(true);
     // Load all statuses in parallel
     const [openRes, pendingRes, resolvedRes] = await Promise.all([
-      base44.functions.invoke("chatwoot", { action: "getConversations", account_id: ACCOUNT_ID, page: 1, status: "open" }),
-      base44.functions.invoke("chatwoot", { action: "getConversations", account_id: ACCOUNT_ID, page: 1, status: "pending" }),
-      base44.functions.invoke("chatwoot", { action: "getConversations", account_id: ACCOUNT_ID, page: 1, status: "resolved" }),
+      api.functions.invoke("chatwoot", { action: "getConversations", account_id: ACCOUNT_ID, page: 1, status: "open" }),
+      api.functions.invoke("chatwoot", { action: "getConversations", account_id: ACCOUNT_ID, page: 1, status: "pending" }),
+      api.functions.invoke("chatwoot", { action: "getConversations", account_id: ACCOUNT_ID, page: 1, status: "resolved" }),
     ]);
 
     const open     = openRes.data?.data?.payload || [];
@@ -50,13 +50,13 @@ export default function Leads() {
   }
 
   async function loadLabels() {
-    const res = await base44.functions.invoke("chatwoot", { action: "getLabels", account_id: ACCOUNT_ID });
+    const res = await api.functions.invoke("chatwoot", { action: "getLabels", account_id: ACCOUNT_ID });
     setLabels(res.data?.payload || []);
   }
 
   async function handleDrop(colId) {
     if (!dragging || dragging.status === colId) return;
-    await base44.functions.invoke("chatwoot", {
+    await api.functions.invoke("chatwoot", {
       action: "toggleStatus",
       account_id: ACCOUNT_ID,
       conversation_id: dragging.id,

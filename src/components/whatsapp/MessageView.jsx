@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Send, CheckCheck, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/client";
 
 const MSG_POLL_INTERVAL = 10000; // 10 seconds
 
@@ -24,7 +24,7 @@ export default function MessageView({ conversation, accountId, onStatusChange })
     pollRef.current = setInterval(() => loadMessages(false), MSG_POLL_INTERVAL);
 
     // Also react to webhook events via WhatsAppMessage subscribe
-    const unsubscribe = base44.entities.WhatsAppMessage.subscribe((event) => {
+    const unsubscribe = api.entities.WhatsAppMessage.subscribe((event) => {
       if (event.data?.whatsapp_line === String(conversation.id)) {
         loadMessages(false);
       }
@@ -42,7 +42,7 @@ export default function MessageView({ conversation, accountId, onStatusChange })
 
   async function loadMessages(showLoading = false) {
     if (showLoading) setLoading(true);
-    const res = await base44.functions.invoke("chatwoot", {
+    const res = await api.functions.invoke("chatwoot", {
       action: "getMessages",
       account_id: accountId,
       conversation_id: conversation.id,
@@ -54,7 +54,7 @@ export default function MessageView({ conversation, accountId, onStatusChange })
   async function sendMessage() {
     if (!text.trim()) return;
     setSending(true);
-    await base44.functions.invoke("chatwoot", {
+    await api.functions.invoke("chatwoot", {
       action: "sendMessage",
       account_id: accountId,
       conversation_id: conversation.id,
@@ -66,7 +66,7 @@ export default function MessageView({ conversation, accountId, onStatusChange })
   }
 
   async function toggleStatus(status) {
-    await base44.functions.invoke("chatwoot", {
+    await api.functions.invoke("chatwoot", {
       action: "toggleStatus",
       account_id: accountId,
       conversation_id: conversation.id,

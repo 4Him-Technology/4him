@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/client";
 import { Calendar, Users, CheckCircle, XCircle, Clock, AlertTriangle, TrendingUp, MessageSquare, DollarSign, Activity } from "lucide-react";
 import StatCard from "../components/dashboard/StatCard";
 import AppointmentChart from "../components/dashboard/AppointmentChart";
@@ -28,10 +28,10 @@ export default function Dashboard() {
   useEffect(() => {
     async function load() {
       const [apts, pts, fins, msgs] = await Promise.all([
-        base44.entities.Appointment.list("-date", 500),
-        base44.entities.Patient.list("-created_date", 500),
-        base44.entities.FinancialRecord.list("-date", 500),
-        base44.entities.WhatsAppMessage.list("-created_date", 500),
+        api.entities.Appointment.list("-date", 500),
+        api.entities.Patient.list("-created_date", 500),
+        api.entities.FinancialRecord.list("-date", 500),
+        api.entities.WhatsAppMessage.list("-created_date", 500),
       ]);
       setAppointments(apts);
       setPatients(pts);

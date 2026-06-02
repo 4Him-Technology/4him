@@ -27,8 +27,6 @@ function iso(dayOffset = 0) {
 // ---- IDs estáveis para manter os relacionamentos entre entidades ----
 const ID = {
   patient: { ana: 'pat_ana', bruno: 'pat_bruno', carla: 'pat_carla', diego: 'pat_diego', elaine: 'pat_elaine' },
-  legalClient: { construtora: 'lcl_construtora', mariana: 'lcl_mariana', roberto: 'lcl_roberto', techsa: 'lcl_techsa' },
-  legalCase: { c1: 'lca_trab_001', c2: 'lca_civ_002', c3: 'lca_emp_003', c4: 'lca_fam_004' },
 };
 
 // =====================================================================================
@@ -86,44 +84,7 @@ const WhatsAppMessage = [
 ];
 
 // =====================================================================================
-// ADVOCACIA
-// =====================================================================================
-
-const LegalClient = [
-  { id: ID.legalClient.construtora, created_date: iso(-50), updated_date: iso(-50), full_name: 'Construtora Horizonte Ltda', phone: '(11) 3344-5566', email: 'contato@horizonte.com.br', cpf_cnpj: '12.345.678/0001-90', type: 'Pessoa Jurídica', area: 'Empresarial', source: 'Indicação', status: 'Ativo', notes: 'Cliente recorrente em contratos.' },
-  { id: ID.legalClient.mariana, created_date: iso(-35), updated_date: iso(-35), full_name: 'Mariana Ferreira', phone: '(11) 98123-9090', email: 'mariana.f@email.com', cpf_cnpj: '321.654.987-00', date_of_birth: '1988-09-14', type: 'Pessoa Física', area: 'Trabalhista', source: 'Site', status: 'Ativo', notes: '' },
-  { id: ID.legalClient.roberto, created_date: iso(-25), updated_date: iso(-25), full_name: 'Roberto Nogueira', phone: '(11) 97000-3030', email: 'roberto.n@email.com', cpf_cnpj: '654.321.789-11', date_of_birth: '1975-04-03', type: 'Pessoa Física', area: 'Família', source: 'Indicação', status: 'Ativo', notes: 'Processo de divórcio em andamento.' },
-  { id: ID.legalClient.techsa, created_date: iso(-14), updated_date: iso(-14), full_name: 'TechSA Soluções', phone: '(11) 4002-8922', email: 'juridico@techsa.com', cpf_cnpj: '98.765.432/0001-10', type: 'Pessoa Jurídica', area: 'Cível', source: 'Redes Sociais', status: 'Ativo', notes: '' },
-];
-
-const LegalCase = [
-  { id: ID.legalCase.c1, created_date: iso(-34), updated_date: iso(-4), client_id: ID.legalClient.mariana, client_name: 'Mariana Ferreira', client_phone: '(11) 98123-9090', case_number: '0001234-56.2024.5.02.0011', area: 'Trabalhista', type: 'Audiência', date: dateOnly(5), time: '13:30', court: '11ª Vara do Trabalho de SP', status: 'Agendado', notes: 'Audiência de instrução.' },
-  { id: ID.legalCase.c2, created_date: iso(-13), updated_date: iso(-2), client_id: ID.legalClient.techsa, client_name: 'TechSA Soluções', client_phone: '(11) 4002-8922', case_number: '1009876-12.2024.8.26.0100', area: 'Cível', type: 'Prazo', date: dateOnly(2), time: '', court: '3ª Vara Cível Central', status: 'Pendente', notes: 'Prazo para contestação.' },
-  { id: ID.legalCase.c3, created_date: iso(-48), updated_date: iso(-10), client_id: ID.legalClient.construtora, client_name: 'Construtora Horizonte Ltda', client_phone: '(11) 3344-5566', case_number: '', area: 'Empresarial', type: 'Reunião', date: dateOnly(-7), time: '15:00', court: '', status: 'Realizado', notes: 'Revisão de contrato de obra.' },
-  { id: ID.legalCase.c4, created_date: iso(-24), updated_date: iso(-1), client_id: ID.legalClient.roberto, client_name: 'Roberto Nogueira', client_phone: '(11) 97000-3030', case_number: '2003456-78.2024.8.26.0011', area: 'Família', type: 'Ação', date: dateOnly(12), time: '', court: 'Vara de Família e Sucessões', status: 'Pendente', notes: 'Divórcio litigioso.' },
-];
-
-const LegalDocument = [
-  { id: 'ldoc_001', created_date: iso(-9), updated_date: iso(-9), tipo: 'Petição Inicial', cliente: 'Mariana Ferreira', client_id: ID.legalClient.mariana, texto: 'EXCELENTÍSSIMO(A) SENHOR(A) DOUTOR(A) JUIZ(A) DO TRABALHO...\n\n(Texto da peça — exemplo armazenado localmente.)' },
-  { id: 'ldoc_002', created_date: iso(-4), updated_date: iso(-4), tipo: 'Contrato de Prestação de Serviços', cliente: 'Construtora Horizonte Ltda', client_id: ID.legalClient.construtora, texto: 'CONTRATO DE PRESTAÇÃO DE SERVIÇOS ADVOCATÍCIOS\n\nPelo presente instrumento particular...' },
-];
-
-const LegalFinancial = [
-  { id: 'lfin_001', created_date: iso(-30), updated_date: iso(-30), description: 'Honorários iniciais - Mariana', type: 'Receita', category: 'Honorários', client_name: 'Mariana Ferreira', amount: 3500, date: dateOnly(-30), notes: '' },
-  { id: 'lfin_002', created_date: iso(-22), updated_date: iso(-22), description: 'Custas processuais', type: 'Custo', category: 'Custas Processuais', client_name: 'TechSA Soluções', amount: 480, date: dateOnly(-22), notes: '' },
-  { id: 'lfin_003', created_date: iso(-15), updated_date: iso(-15), description: 'Honorários contrato - Horizonte', type: 'Receita', category: 'Honorários', client_name: 'Construtora Horizonte Ltda', amount: 8000, date: dateOnly(-15), notes: '' },
-  { id: 'lfin_004', created_date: iso(-9), updated_date: iso(-9), description: 'Honorários de perito', type: 'Custo', category: 'Peritos', client_name: 'Roberto Nogueira', amount: 1200, date: dateOnly(-9), notes: '' },
-  { id: 'lfin_005', created_date: iso(-4), updated_date: iso(-4), description: 'Aluguel do escritório', type: 'Custo', category: 'Aluguel', client_name: '', amount: 5500, date: dateOnly(-4), notes: '' },
-];
-
-const CaseReminder = [
-  { id: 'rem_001', created_date: iso(-4), updated_date: iso(-4), case_id: ID.legalCase.c1, case_ref: '0001234-56.2024.5.02.0011', client_name: 'Mariana Ferreira', title: 'Audiência de instrução', reminder_date: dateOnly(5), reminder_days_before: 2, type: 'Audiência', is_done: false, email_sent: false, notes: 'Levar testemunhas.' },
-  { id: 'rem_002', created_date: iso(-2), updated_date: iso(-2), case_id: ID.legalCase.c2, case_ref: '1009876-12.2024.8.26.0100', client_name: 'TechSA Soluções', title: 'Prazo para contestação', reminder_date: dateOnly(2), reminder_days_before: 1, type: 'Prazo', is_done: false, email_sent: false, notes: '' },
-  { id: 'rem_003', created_date: iso(-1), updated_date: iso(-1), case_id: ID.legalCase.c4, case_ref: '2003456-78.2024.8.26.0011', client_name: 'Roberto Nogueira', title: 'Protocolar petição', reminder_date: dateOnly(10), reminder_days_before: 3, type: 'Prazo', is_done: false, email_sent: false, notes: '' },
-];
-
-// =====================================================================================
-// USUÁRIO (sessão local — substitui o login do Base44)
+// USUÁRIO (sessão local — substitui um login externo)
 // =====================================================================================
 
 const User = [
@@ -143,11 +104,6 @@ export const seed = {
   FinancialRecord,
   ClinicSettings,
   WhatsAppMessage,
-  LegalClient,
-  LegalCase,
-  LegalDocument,
-  LegalFinancial,
-  CaseReminder,
   User,
 };
 

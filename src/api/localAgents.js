@@ -1,4 +1,4 @@
-// Agentes de IA — versão LOCAL (sem Base44).
+// Agentes de IA — versão LOCAL.
 //
 // Mantém as conversas no localStorage e devolve uma resposta-stub do assistente, já que a IA
 // de verdade depende de um provedor externo (ex.: Claude API). Quando você for plugar um
@@ -12,7 +12,7 @@ const conversations = createCollection('agent_conversations', []);
 const listeners = new Map();
 
 const LOCAL_REPLY =
-  '🤖 _(Modo local)_ A assistente de IA está **desconectada do Base44**. ' +
+  '🤖 _(Modo local)_ A assistente de IA está **desconectada**. ' +
   'Para respostas reais, conecte um provedor de IA (ex.: Claude API) na função ' +
   '`addMessage` em `src/api/localAgents.js`.';
 

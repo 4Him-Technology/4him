@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/client";
 
 export default function AppointmentModal({ open, onClose, appointment, patients, onSaved }) {
   const [form, setForm] = useState({
@@ -53,9 +53,9 @@ export default function AppointmentModal({ open, onClose, appointment, patients,
   const handleSave = async () => {
     setSaving(true);
     if (appointment) {
-      await base44.entities.Appointment.update(appointment.id, form);
+      await api.entities.Appointment.update(appointment.id, form);
     } else {
-      await base44.entities.Appointment.create(form);
+      await api.entities.Appointment.create(form);
     }
     setSaving(false);
     onSaved();

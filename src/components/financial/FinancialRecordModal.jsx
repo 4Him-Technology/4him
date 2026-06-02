@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/client";
 
 const CATEGORIES_REVENUE = ["Consulta", "Exame", "Procedimento", "Outros"];
 const CATEGORIES_COST = ["Aluguel", "Salário", "Equipamento", "Marketing", "Outros"];
@@ -27,9 +27,9 @@ export default function FinancialRecordModal({ open, onClose, record, onSaved })
     setSaving(true);
     const data = { ...form, amount: parseFloat(form.amount) };
     if (record?.id) {
-      await base44.entities.FinancialRecord.update(record.id, data);
+      await api.entities.FinancialRecord.update(record.id, data);
     } else {
-      await base44.entities.FinancialRecord.create(data);
+      await api.entities.FinancialRecord.create(data);
     }
     setSaving(false);
     onSaved();

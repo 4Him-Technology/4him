@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -27,8 +27,8 @@ export default function Appointments() {
 
   const load = async () => {
     const [apts, pts] = await Promise.all([
-      base44.entities.Appointment.list("-date", 200),
-      base44.entities.Patient.list("-created_date", 500),
+      api.entities.Appointment.list("-date", 200),
+      api.entities.Patient.list("-created_date", 500),
     ]);
     setAppointments(apts);
     setPatients(pts);
@@ -38,7 +38,7 @@ export default function Appointments() {
   useEffect(() => { load(); }, []);
 
   const handleDelete = async (id) => {
-    await base44.entities.Appointment.delete(id);
+    await api.entities.Appointment.delete(id);
     load();
   };
 

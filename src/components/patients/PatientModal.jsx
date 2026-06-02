@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/client";
 
 export default function PatientModal({ open, onClose, patient, onSaved }) {
   const [form, setForm] = useState({
@@ -40,9 +40,9 @@ export default function PatientModal({ open, onClose, patient, onSaved }) {
   const handleSave = async () => {
     setSaving(true);
     if (patient) {
-      await base44.entities.Patient.update(patient.id, form);
+      await api.entities.Patient.update(patient.id, form);
     } else {
-      await base44.entities.Patient.create(form);
+      await api.entities.Patient.create(form);
     }
     setSaving(false);
     onSaved();
