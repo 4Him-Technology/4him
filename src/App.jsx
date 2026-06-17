@@ -1,11 +1,12 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { HashRouter as Router, Route, Routes, Navigate, Outlet } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import Layout from './components/Layout';
+import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Appointments from './pages/Appointments';
 import WhatsApp from './pages/WhatsApp';
@@ -18,6 +19,14 @@ import AIAssistant from './pages/AIAssistant';
 import LandingPage from './pages/LandingPage';
 import LandingPage2 from './pages/LandingPage2';
 import LandingPage3 from './pages/LandingPage3';
+
+// Portão de demonstração: enquanto a autenticação real (Cognito) não está
+// conectada, o acesso ao sistema depende de um flag local definido no Login.
+function RequireDemoAuth() {
+  let authed = false;
+  try { authed = localStorage.getItem("morah_demo_authed") === "1"; } catch (_) {}
+  return authed ? <Outlet /> : <Navigate to="/login" replace />;
+}
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -45,6 +54,11 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
+      {/* Login (demonstração) — público */}
+      <Route path="/login" element={<Login />} />
+
+      {/* Rotas protegidas pelo "login" de demonstração */}
+      <Route element={<RequireDemoAuth />}>
       <Route element={<Layout />}>
         <Route path="/" element={<Dashboard />} />
         <Route path="/agendamentos" element={<Appointments />} />
@@ -56,6 +70,7 @@ const AuthenticatedApp = () => {
         <Route path="/leads" element={<Leads />} />
         <Route path="/assistente" element={<AIAssistant />} />
         <Route path="*" element={<PageNotFound />} />
+      </Route>
       </Route>
       <Route path="/landing" element={<LandingPage />} />
       <Route path="/landing2" element={<LandingPage2 />} />

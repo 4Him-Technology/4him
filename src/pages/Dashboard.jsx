@@ -188,11 +188,6 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6 max-w-7xl">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-sm text-muted-foreground mt-1">Visão geral do consultório</p>
-      </div>
-
       {/* KPIs principais */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
         <StatCard title="Hoje" value={todayAppointments.length} icon={Clock} subtitle="consultas hoje" />

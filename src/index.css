@@ -1,80 +1,93 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+   Tema MORAH — derivado da paleta da marca (amora + folha),
+   mapeado para os tokens shadcn (HSL). Trocar aqui reestiliza
+   o app inteiro: sidebar, cards, botões, gráficos.
+   ============================================================ */
 @layer base {
   :root {
-    --font-inter: 'Inter', sans-serif;
-    --background: 40 20% 97%;
-    --foreground: 30 15% 12%;
+    --font-inter: 'Manrope', sans-serif;
+    --font-display: 'Plus Jakarta Sans', sans-serif;
+
+    --background: 285 25% 98%;          /* gray-50 plum-tinted */
+    --foreground: 261 16% 11%;          /* gray-900 */
     --card: 0 0% 100%;
-    --card-foreground: 30 15% 12%;
+    --card-foreground: 261 16% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 30 15% 12%;
-    --primary: 34 55% 38%;
-    --primary-foreground: 40 30% 96%;
-    --secondary: 30 20% 85%;
-    --secondary-foreground: 30 15% 12%;
-    --muted: 36 15% 93%;
-    --muted-foreground: 30 10% 45%;
-    --accent: 34 40% 92%;
-    --accent-foreground: 34 55% 28%;
-    --destructive: 0 72% 55%;
+    --popover-foreground: 261 16% 11%;
+
+    --primary: 305 49% 36%;             /* berry-600 */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 304 42% 93%;           /* berry-100 */
+    --secondary-foreground: 306 50% 29%;/* berry-700 */
+    --muted: 260 22% 95%;               /* gray-100 */
+    --muted-foreground: 259 10% 50%;    /* gray-500 */
+    --accent: 300 50% 97%;              /* berry-50 */
+    --accent-foreground: 306 50% 29%;   /* berry-700 */
+    --destructive: 0 74% 56%;           /* critical-500 */
     --destructive-foreground: 0 0% 100%;
-    --border: 36 15% 87%;
-    --input: 36 15% 87%;
-    --ring: 34 55% 38%;
-    --chart-1: 34 55% 38%;
-    --chart-2: 34 40% 55%;
-    --chart-3: 34 25% 68%;
-    --chart-4: 0 65% 50%;
-    --chart-5: 200 50% 40%;
+
+    --border: 257 18% 89%;              /* gray-200 */
+    --input: 257 18% 89%;
+    --ring: 305 41% 46%;                /* berry-500 */
+
+    --chart-1: 305 41% 46%;             /* berry */
+    --chart-2: 144 43% 43%;             /* leaf */
+    --chart-3: 217 73% 55%;             /* info azul */
+    --chart-4: 39 91% 57%;              /* warning âmbar */
+    --chart-5: 302 38% 73%;             /* berry-300 */
+
     --radius: 0.75rem;
-    --sidebar-background: 24 8% 9%;
-    --sidebar-foreground: 36 20% 88%;
-    --sidebar-primary: 34 55% 60%;
-    --sidebar-primary-foreground: 28 18% 10%;
-    --sidebar-accent: 24 8% 15%;
-    --sidebar-accent-foreground: 34 55% 70%;
-    --sidebar-border: 24 8% 18%;
-    --sidebar-ring: 34 55% 52%;
+
+    /* Sidebar — plum profundo (a tinta da logo) */
+    --sidebar-background: 297 44% 12%;
+    --sidebar-foreground: 290 15% 85%;
+    --sidebar-primary: 305 45% 65%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 297 32% 18%;
+    --sidebar-accent-foreground: 290 25% 92%;
+    --sidebar-border: 297 28% 20%;
+    --sidebar-ring: 305 41% 58%;
   }
 
   .dark {
-    --background: 215 25% 8%;
-    --foreground: 210 20% 95%;
-    --card: 215 25% 12%;
-    --card-foreground: 210 20% 95%;
-    --popover: 215 25% 12%;
-    --popover-foreground: 210 20% 95%;
-    --primary: 174 50% 52%;
-    --primary-foreground: 215 25% 8%;
-    --secondary: 215 60% 40%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 215 20% 16%;
-    --muted-foreground: 210 10% 55%;
-    --accent: 215 30% 18%;
-    --accent-foreground: 174 50% 65%;
-    --destructive: 0 62% 45%;
+    --background: 280 18% 9%;
+    --foreground: 285 15% 92%;
+    --card: 282 18% 13%;
+    --card-foreground: 285 15% 92%;
+    --popover: 282 18% 13%;
+    --popover-foreground: 285 15% 92%;
+    --primary: 305 46% 62%;             /* berry mais claro no escuro */
+    --primary-foreground: 297 44% 10%;
+    --secondary: 300 20% 22%;
+    --secondary-foreground: 290 20% 92%;
+    --muted: 282 14% 18%;
+    --muted-foreground: 285 10% 60%;
+    --accent: 300 25% 22%;
+    --accent-foreground: 305 46% 74%;
+    --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 98%;
-    --border: 215 20% 18%;
-    --input: 215 20% 18%;
-    --ring: 174 50% 52%;
-    --chart-1: 215 70% 55%;
-    --chart-2: 174 50% 52%;
-    --chart-3: 35 85% 60%;
-    --chart-4: 0 72% 60%;
-    --chart-5: 260 50% 60%;
-    --sidebar-background: 215 30% 6%;
-    --sidebar-foreground: 210 20% 85%;
-    --sidebar-primary: 174 50% 52%;
+    --border: 282 14% 20%;
+    --input: 282 14% 20%;
+    --ring: 305 46% 62%;
+    --chart-1: 305 46% 62%;
+    --chart-2: 144 45% 55%;
+    --chart-3: 217 73% 62%;
+    --chart-4: 39 91% 62%;
+    --chart-5: 302 40% 70%;
+    --sidebar-background: 297 44% 9%;
+    --sidebar-foreground: 290 15% 82%;
+    --sidebar-primary: 305 46% 66%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 215 30% 14%;
-    --sidebar-accent-foreground: 210 20% 85%;
-    --sidebar-border: 215 30% 14%;
-    --sidebar-ring: 174 50% 52%;
+    --sidebar-accent: 297 32% 16%;
+    --sidebar-accent-foreground: 290 22% 90%;
+    --sidebar-border: 297 28% 18%;
+    --sidebar-ring: 305 46% 62%;
   }
 }
 
@@ -85,5 +98,11 @@
 
   body {
     @apply bg-background text-foreground font-inter;
+  }
+
+  /* Títulos na fonte de display da Morah */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
   }
 }
